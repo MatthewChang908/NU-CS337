@@ -23,81 +23,81 @@
         {
             "name": "Best Screenplay",
             "nominees": [
-            "Chris Terrio (Argo)",
-            "Quentin Tarantino (Django Unchained)",
-            "Tony Kushner (Lincoln)",
-            "David O. Russell and Matthew Quick (Silver Linings Playbook)",
-            "Mark Boal (Zero Dark Thirty)"
+            "Argo",
+            "Django Unchained",
+            "Lincoln",
+            "Silver Linings Playbook",
+            "Zero Dark Thirty"
             ]
         },
         {
             "name": "Best Director",
             "nominees": [
-            "Ben Affleck (Argo)",
-            "Kathryn Bigelow (Zero Dark Thirty)",
-            "Ang Lee (Life of Pi)",
-            "Steven Spielberg (Lincoln)",
-            "Quentin Tarantino (Django Unchained)"
+            "Ben Affleck",
+            "Kathryn Bigelow",
+            "Ang Lee",
+            "Steven Spielberg",
+            "Quentin Tarantino"
             ]
         },
         {
             "name": "Best Actor in a Drama",
             "nominees": [
-            "Daniel Day-Lewis (Lincoln)",
-            "Richard Gere (Arbitrage)",
-            "John Hawkes (The Sessions)",
-            "Joaquin Phoenix (The Master)",
-            "Denzel Washington (Flight)"
+            "Daniel Day-Lewis",
+            "Richard Gere",
+            "John Hawkes",
+            "Joaquin Phoenix",
+            "Denzel Washington"
             ]
         },
         {
             "name": "Best Actress in a Drama",
             "nominees": [
-            "Jessica Chastain (Zero Dark Thirty)",
-            "Marion Cotillard (Rust and Bone)",
-            "Helen Mirren (Hitchcock)",
-            "Naomi Watts (The Impossible)",
-            "Rachel Weisz (The Deep Blue Sea)"
+            "Jessica Chastain",
+            "Marion Cotillard",
+            "Helen Mirren",
+            "Naomi Watts",
+            "Rachel Weisz"
             ]
         },
         {
-            "name": "Best Actor in a Comedy or Musical",
+            "name": "Best Actor in a Motion Picture - Comedy or Musical",
             "nominees": [
-            "Jack Black (Bernie)",
-            "Hugh Jackman (Les Miserables)",
-            "Bradley Cooper (Silver Linings Playbook)",
-            "Bill Murray (Hyde Park on Hudson)",
-            "Ewan MacGregor (Salmon Fishing in the Yemen)"
+            "Jack Black",
+            "Hugh Jackman",
+            "Bradley Cooper",
+            "Bill Murray",
+            "Ewan MacGregor"
             ]
         },
         {
-            "name": "Best Actress in a Comedy or Musical",
+            "name": "Best Actress in a Motion Picture - Comedy or Musical",
             "nominees": [
-            "Emily Blunt (Salmon Fishing in the Yemen)",
-            "Judi Dench (The Best Exotic Marigold Hotel)",
-            "Jennifer Lawrence (Silver Linings Playbook)",
-            "Maggie Smith (Quartet)",
-            "Meryl Streep (Hope Springs)"
+            "Emily Blunt",
+            "Judi Dench",
+            "Jennifer Lawrence",
+            "Maggie Smith",
+            "Meryl Streep"
             ]
         },
         {
             "name": "Best Supporting Actress",
             "nominees": [
-            "Amy Adams (The Master)",
-            "Sally Field (Lincoln)",
-            "Anne Hathaway (Les Miserables)",
-            "Helen Hunt (The Sessions)",
-            "Nicole Kidman (The Paperboy)"
+            "Amy Adams",
+            "Sally Field",
+            "Anne Hathaway",
+            "Helen Hunt",
+            "Nicole Kidman"
             ]
         },
         {
             "name": "Best Supporting Actor",
             "nominees": [
-            "Alan Arkin (Argo)",
-            "Leonardo DiCaprio (Django Unchained)",
-            "Philip Seymour Hoffman (The Master)",
-            "Tommy Lee Jones (Lincoln)",
-            "Christoph Waltz (Django Unchained)"
+            "Alan Arkin",
+            "Leonardo DiCaprio",
+            "Philip Seymour Hoffman",
+            "Tommy Lee Jones",
+            "Christoph Waltz"
             ]
         },
         {
@@ -111,7 +111,7 @@
             ]
         },
         {
-            "name": "Best Animation",
+            "name": "Best Animated Feature Film",
             "nominees": [
             "Brave",
             "Frankenweenie",
@@ -123,21 +123,21 @@
         {
             "name": "Best Original Score",
             "nominees": [
-            "Mychael Danna (Life of Pi)",
-            "Alexandre Desplat (Argo)",
-            "Dario Marianelli (Anna Karenina)",
-            "Tom Tyker, Johnny Klimek, Rein Holdheil (Cloud Atlas)",
-            "John Williams (Lincoln)"
+            "Life of Pi",
+            "Argo",
+            "Anna Karenina",
+            "Cloud Atlas",
+            "Lincoln"
             ]
         },
         {
             "name": "Best Original Song",
             "nominees": [
-            "'For You' (Act of Valor)",
-            "'Not Running Anymore' (Stand Up Guys)",
-            "'Safe and Sound' (The Hunger Games)",
-            "'Skyfall' (Skyfall)",
-            "'Suddenly' (Les Miserables)"
+            "For You",
+            "Not Running Anymore",
+            "Safe and Sound",
+            "Skyfall",
+            "Suddenly"
             ]
         }
     ]
