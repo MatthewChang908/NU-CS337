@@ -14,17 +14,15 @@ def get_winner(tweets, award, nominees):
         "NOMINEE wins the AWARD award",
         "AWARD goes to NOMINEE",
         "AWARD won by NOMINEE"
-    ] 
+    ]
     regex = defaultdict(list)
 
     for nominee in nominees:
         for template in regex_templates:
             reg = template.replace("NOMINEE", nominee).replace("AWARD", award)
             regex[nominee].append(reg)
-    # print(regex)
-    # return
-    result = defaultdict(int) # mapping nominee to frequency
 
+    result = defaultdict(int) # mapping nominee to frequency
     # Run the tweets thru the regex expressions
     for tweet in tweets:
         found = False
@@ -48,10 +46,30 @@ def get_winner(tweets, award, nominees):
         return ""
     return max(result, key=result.get)
 
-def test(tweets):
-    for tweet in tweets:
-        if "Best Actor in a Motion Picture - Comedy or Musical" in tweet:
-            print(tweet)
+def get_all_winners(tweets, awards):
+    results = {}
+    for award in awards:
+        nominees = award['nominees']
+        award_name = award['name']
+        winner = get_winner(tweets, award_name, nominees)
+        results[award_name] = winner
+    nominees = {}
+    for award in awards:
+        nominees[award['name']] = award['nominees']
+    return [results, nominees]
+
+def print_all_winners(results, nominees):
+    for award in results:
+        print("Award:", award)
+        print("Presenters WIP")
+        print("Nominees:", nominees[award])
+        print("Winner:", results[award])
+        print()
+
+# Part 2: Given the award name, return the nominees and the presenter
+
+# Part 3: Extract the award names from the tweets
+
     
 def __main__():
     
@@ -71,16 +89,13 @@ def __main__():
         for tweet in data:
             text = tweet['text']
             tweets.append(text)
-    print(len(tweets))
-    for award in config['Awards']:
-        nominees = award['nominees']
-        award_name = award['name']
-        winner = get_winner(tweets, award_name, nominees)
-        if not winner:
-            print("No winner found for " + award_name)
-            continue
-        print("Winner of " + award_name + " is " + winner)
-    # test(tweets)
+
+
+    # PART 1
+    awards = config['Awards']
+    results, nominees = get_all_winners(tweets, awards)
+    print_all_winners(results, nominees)
+
     return
 
 if __name__ == "__main__":
