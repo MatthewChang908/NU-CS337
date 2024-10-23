@@ -67,15 +67,17 @@ def print_all_winners(results, nominees):
         print()
 
 # Part 2: Given the award name, return the nominees and the presenter
+def get_nominees(tweets, award):
+    return 
+
+def get_presenters(tweets, award):
+    return
 
 # Part 3: Extract the award names from the tweets
-
+def get_awards(tweets):
+    return
     
 def __main__():
-    
-    # for each award in the award config:
-    # call get_winner(award, nominees)
-    
     config = None
     with open ('config.json', 'r') as file:
         config = json.load(file)
@@ -90,9 +92,22 @@ def __main__():
             text = tweet['text']
             tweets.append(text)
 
+    # PART 3
+    awards_names = get_awards(tweets)
+
+    # PART 2
+    awards = {}
+    for award in awards_names:
+        obj = {}
+        nominees = get_nominees(tweets, award)
+        presenters = get_presenters(tweets, award)
+        obj['name'] = award
+        obj['nominees'] = nominees
+        obj['presenters'] = presenters
+        awards[award] = obj
 
     # PART 1
-    awards = config['Awards']
+    awards = config['Awards'] # TODO: Replace with results from Part 2
     results, nominees = get_all_winners(tweets, awards)
     print_all_winners(results, nominees)
 
