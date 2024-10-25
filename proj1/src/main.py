@@ -1,5 +1,9 @@
 import json
 from collections import defaultdict
+import os
+import pandas as pd
+from preprocessing import load_tweets, preprocess_tweets
+
 # STEP 1: Get the winner of the award given the award and the nominees
 def get_winner(tweets, award, nominees):
     # Get all tweets
@@ -77,20 +81,28 @@ def get_presenters(tweets, award):
 def get_awards(tweets):
     return
     
-def __main__():
+def main():
     config = None
-    with open ('config.json', 'r') as file:
+    with open('config.json', 'r') as file:
         config = json.load(file)
 
-    # List of all the tweets
-    tweets = []
+    # 获取当前脚本的目录
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Open the data
-    with open('gg2013.json', 'r') as file:
-        data = json.load(file)
-        for tweet in data:
-            text = tweet['text']
-            tweets.append(text)
+    # 构建输入文件的完整路径
+    input_file = 'gg2013.json'
+    input_path = os.path.join(current_dir, input_file)
+
+    print("Loading tweets...")
+    df = load_tweets(input_path)
+    print(f"Loaded {len(df)} tweets")
+
+    print("Preprocessing tweets...")
+    df_processed = preprocess_tweets(df)
+    print(f"After processing, {len(df_processed)} English tweets remain")
+
+    # 将处理后的推文转换为列表
+    tweets = df_processed['cleaned_text'].tolist()
 
     # PART 3
     awards_names = get_awards(tweets)
@@ -111,7 +123,5 @@ def __main__():
     results, nominees = get_all_winners(tweets, awards)
     print_all_winners(results, nominees)
 
-    return
-
 if __name__ == "__main__":
-    __main__()
+    main()
