@@ -27,7 +27,7 @@ def get_winner(tweets, award, nominees):
             regex[nominee].append(reg)
 
     result = defaultdict(int) # mapping nominee to frequency
-    # Run the tweets thru the regex expressions
+    # Run the tweets through the regex expressions
     for tweet in tweets:
         found = False
         for nominee in regex:
@@ -45,7 +45,7 @@ def get_winner(tweets, award, nominees):
                     found = True
                     break
     
-    # Get the winner from the tweets thru max frequency
+    # Get the winner from the tweets through max frequency
     if not result:
         return ""
     return max(result, key=result.get)
@@ -82,14 +82,15 @@ def get_awards(tweets):
     return
     
 def main():
-    config = None
-    with open('config.json', 'r') as file:
-        config = json.load(file)
-
-    # 获取当前脚本的目录
+    # Note: Part 0 (Preprocessing) has been moved to before Part 3
+    # This ensures that the tweets are loaded and preprocessed before any analysis
+    # The 'tweets' variable is now available for use in subsequent parts
+    # revise if its not in the right place
+    # Part 0: Preprocess all tweets
+    # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # 构建输入文件的完整路径
+    # Build the full path for the input file
     input_file = 'gg2013.json'
     input_path = os.path.join(current_dir, input_file)
 
@@ -101,8 +102,12 @@ def main():
     df_processed = preprocess_tweets(df)
     print(f"After processing, {len(df_processed)} English tweets remain")
 
-    # 将处理后的推文转换为列表
+    # Convert processed tweets to a list
     tweets = df_processed['cleaned_text'].tolist()
+
+    config = None
+    with open('config.json', 'r') as file:
+        config = json.load(file)
 
     # PART 3
     awards_names = get_awards(tweets)
