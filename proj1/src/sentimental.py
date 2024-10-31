@@ -112,47 +112,6 @@ def format_sentiment_summary(entity_type, entity_name, stats):
     
     return output + "\n"
 
-def generate_autograder_format(results):
-    #Generate JSON format compatible with autograder
-    autograder_output = {
-        "Host": ["amy poehler", "tina fey"],  # Will be replaced with actual hosts
-        "award_data": {}
-    }
-    
-    # Example award data structure (to be replaced with actual data)
-    award_data = {
-        "Best Motion Picture - Drama": {
-            "Presenters": ["robert pattinson", "amanda seyfried"],
-            "Nominees": [
-                "argo",
-                "django unchained",
-                "lincoln",
-                "zero dark thirty",
-                "life of pi"
-            ],
-            "Winner": "argo"
-        },
-        "Best Motion Picture - Musical or Comedy": {
-            "Presenters": ["will ferrell", "kristen wiig"],
-            "Nominees": [
-                "les miserables",
-                "silver linings playbook",
-                "moonrise kingdom",
-                "salmon fishing in the yemen",
-                "the best exotic marigold hotel"
-            ],
-            "Winner": "les miserables"
-        }
-    }
-    
-    autograder_output.update(award_data)
-    
-    # Write to JSON file
-    with open('sentiment_analysis_autograder.json', 'w') as f:
-        json.dump(autograder_output, f, indent=2)
-    
-    return autograder_output
-
 def main():
     # Main function to analyze Golden Globes tweets
     tweets = load_json_file('gg2013.json')
@@ -171,10 +130,18 @@ def main():
     
     output = "GOLDEN GLOBES 2013 SENTIMENT ANALYSIS\n\n"
     
+    # TODO: Import data from main.py analysis results
+    # Format expected:
+    # hosts = get_hosts(tweets)  # List of hosts
+    # winners = get_all_winners(tweets, awards)  # Dictionary of award:winner
+    # presenters = get_presenters(tweets, award)  # Dictionary of award:presenters
+    # nominees = get_nominees(tweets, award)  # Dictionary of award:nominees
+    
     # 1. Hosts Analysis
     output += "1. HOSTS SENTIMENT\n"
     output += "=================\n"
-    hosts = ["amy poehler", "tina fey"]
+    # TODO: Replace with actual hosts from main analysis
+    hosts = ["amy poehler", "tina fey"]  # This will be replaced with get_hosts() result
     for host in hosts:
         stats = analyze_sentiment_for_entity(tweets, host)
         results['hosts'][host] = stats
@@ -183,30 +150,32 @@ def main():
     # 2. Winners Analysis
     output += "2. WINNERS SENTIMENT\n"
     output += "===================\n"
+    # TODO: Replace with actual winners from main analysis
     winners = {
         "Best Motion Picture - Drama": "argo",
         "Best Motion Picture - Musical or Comedy": "les miserables",
         "Best Director": "ben affleck"
-    }
+    }  # This will be replaced with get_all_winners() result
     for award, winner in winners.items():
         stats = analyze_sentiment_for_entity(tweets, winner)
         results['winners'][winner] = stats
         output += format_sentiment_summary(f"Winner ({award})", winner, stats)
     
-    # Similar sections for presenters and nominees...
+    # 3. Presenters Analysis
+    output += "3. PRESENTERS SENTIMENT\n"
+    output += "=======================\n"
+    # TODO: Add presenters analysis using get_presenters() result
     
-    # Write results
+    # 4. Nominees Analysis
+    output += "4. NOMINEES SENTIMENT\n"
+    output += "====================\n"
+    # TODO: Add nominees analysis using get_nominees() result
+    
+    # Write results to txt file
     with open('sentiment_analysis_results.txt', 'w') as f:
         f.write(output)
     
     print("Analysis complete! Results saved to sentiment_analysis_results.txt")
-    
-    # Generate and save autograder format
-    autograder_output = generate_autograder_format(results)
-    
-    print("Analysis complete! Results saved to:")
-    print("1. sentiment_analysis_results.txt (human-readable)")
-    print("2. sentiment_analysis_autograder.json (autograder format)")
 
 if __name__ == "__main__":
     main()

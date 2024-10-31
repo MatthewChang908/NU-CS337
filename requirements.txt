@@ -1,10 +1,4 @@
+pandas
 ftfy
 langdetect
-numpy
-pandas
-python-dateutil
-pytz
-six
-tzdata
 Unidecode
-wcwidth
