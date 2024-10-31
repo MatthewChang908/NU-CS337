@@ -3,7 +3,7 @@ from collections import defaultdict
 import os
 import pandas as pd
 from preprocessing import load_tweets, preprocess_tweets
-from redcarpet import main as redcarpet_main  # 直接导入redcarpet的main函数
+from redcarpet import get_red_carpet  # Import the function
 
 # STEP 1: Get the winner of the award given the award and the nominees
 def get_winner(tweets, award, nominees):
@@ -138,7 +138,7 @@ def main():
 
     # redcarpet analysis
     print("\nAnalyzing Red Carpet Fashion...")
-    redcarpet_main()
+    get_red_carpet()  # Call the function directly
 
 if __name__ == "__main__":
     main()
