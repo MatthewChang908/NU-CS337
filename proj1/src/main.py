@@ -1,5 +1,12 @@
 import json
 from collections import defaultdict
+import spacy
+from spacy.matcher import Matcher
+import re
+from collections import Counter
+nlp = spacy.load("en_core_web_sm")
+matcher = Matcher(nlp.vocab)
+from awards import get_awards
 # STEP 1: Get the winner of the award given the award and the nominees
 def get_winner(tweets, award, nominees):
     # Get all tweets
@@ -73,20 +80,16 @@ def get_nominees(tweets, award):
 def get_presenters(tweets, award):
     return
 
-# Part 3: Extract the award names from the tweets
-def get_awards(tweets):
-    return
-    
 def __main__():
     config = None
-    with open ('config.json', 'r') as file:
+    with open ('/Users/matthewchang/NU/NU-CS337/proj1/src/config.json', 'r') as file:
         config = json.load(file)
 
     # List of all the tweets
     tweets = []
     
     # Open the data
-    with open('gg2013.json', 'r') as file:
+    with open('/Users/matthewchang/NU/NU-CS337/proj1/src/gg2013.json', 'r') as file:
         data = json.load(file)
         for tweet in data:
             text = tweet['text']
@@ -95,21 +98,22 @@ def __main__():
     # PART 3
     awards_names = get_awards(tweets)
 
-    # PART 2
-    awards = {}
-    for award in awards_names:
-        obj = {}
-        nominees = get_nominees(tweets, award)
-        presenters = get_presenters(tweets, award)
-        obj['name'] = award
-        obj['nominees'] = nominees
-        obj['presenters'] = presenters
-        awards[award] = obj
+    # # PART 2
+    # awards = {}
+    # awards_names = []
+    # for award in awards_names:
+    #     obj = {}
+    #     nominees = get_nominees(tweets, award)
+    #     presenters = get_presenters(tweets, award)
+    #     obj['name'] = award
+    #     obj['nominees'] = nominees
+    #     obj['presenters'] = presenters
+    #     awards[award] = obj
 
-    # PART 1
-    awards = config['Awards'] # TODO: Replace with results from Part 2
-    results, nominees = get_all_winners(tweets, awards)
-    print_all_winners(results, nominees)
+    # # PART 1
+    # awards = config['Awards'] # TODO: Replace with results from Part 2
+    # results, nominees = get_all_winners(tweets, awards)
+    # print_all_winners(results, nominees)
 
     return
 
