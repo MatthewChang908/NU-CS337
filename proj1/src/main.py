@@ -80,7 +80,8 @@ def get_presenters(tweets, award):
 
 # Part 3: Extract the award names from the tweets
 def get_awards(tweets):
-    return
+    return []
+
 
 # Note: Part 0 (Preprocessing) has been moved to before Part 3
     # This ensures that the tweets are loaded and preprocessed before any analysis
@@ -96,23 +97,22 @@ def process_tweet_text(tweet):
 def main():
     # Part 0: Preprocess all tweets
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    input_file = 'gg2013.json'
-    input_path = os.path.join(current_dir, input_file)
+    tweets_file = 'gg2013.json'
+    input_path = os.path.join(current_dir, tweets_file)
 
     print("Loading tweets...")
     df = load_tweets(input_path)
     print(f"Loaded {len(df)} tweets")
 
-    print("Preprocessing tweets...")
     df_processed = preprocess_tweets(df)
-    print(f"After processing, {len(df_processed)} English tweets remain")
 
     # Convert processed tweets to list of dictionaries for analysis
     tweets = df_processed.to_dict('records')
     
     # Load configuration
     config = None
-    with open('config.json', 'r') as file:
+    config_path = os.path.join(current_dir, 'config.json')
+    with open(config_path, 'r') as file:
         config = json.load(file)
 
     # PART 3: Extract awards
