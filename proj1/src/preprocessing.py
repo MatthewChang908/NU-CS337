@@ -4,9 +4,14 @@ import re
 import pandas as pd
 import ftfy
 import unicodedata
-from langdetect import detect, LangDetectException
 from unidecode import unidecode
 import datetime
+import concurrent.futures
+from langid import classify
+
+def detect_language(text):
+    language, _ = classify(text)
+    return language
 
 def load_tweets(file_path: str, limit: int = None) -> pd.DataFrame:
     # Load tweets from a JSON file into a pandas DataFrame, with an optional limit on the number of tweets.
@@ -21,34 +26,44 @@ def preprocess_and_extract_features(text: str, timestamp_ms: int) -> dict:
     
     # Check if it's a retweet
     is_retweet = text.startswith('RT @')
-    
+    bare_text = text
+    # remove retweet text
+    if is_retweet:
+        print("old", bare_text)
+        bare_text = " ".join(text.split()[2:])
+        print("new", bare_text)
+
     # Extract hashtags and mentions before cleaning
     hashtags = re.findall(r'#(\w+)', text)
+    # remove hashtags
+    bare_text = re.sub(r'#\w+', '', bare_text)
+
     mentions = re.findall(r'@(\w+)', text)
+    # remove mentions
+    bare_text = re.sub(r'@\w+', '', bare_text)
     
     # Remove URLs (including shortened ones like httptco)
     text_without_urls = re.sub(r'https?://\S+|www\.\S+|httptco\S+', '', text)
-    
+    bare_text = re.sub(r'https?://\S+|www\.\S+|httptco\S+', '', bare_text)
+
     # Remove hashtags and mentions for language detection
     text_for_lang_detect = re.sub(r'#\w+|@\w+', '', text_without_urls)
-    
-    # Detect language
-    try:
-        language = detect(text_for_lang_detect)
-    except LangDetectException:
-        language = 'unknown'
+    language = detect_language(text_for_lang_detect)
+
     
     # Clean the text
     cleaned_text = re.sub(r'[^a-zA-Z0-9\s@#\']', '', text_without_urls)
-    cleaned_text = ' '.join(cleaned_text.split())  # Remove extra whitespace
-    
+    bare_text = re.sub(r'[^a-zA-Z0-9\s@#\']', '', bare_text)
+    cleaned_text = cleaned_text.strip()  # Remove extra whitespace
+    bare_text = bare_text.strip()
     return {
         'cleaned_text': cleaned_text,
         'hashtags': hashtags,
         'mentions': mentions,
         'retweet_text': text if is_retweet else None, #for sentimental analysis and aw
         'timestamp': datetime.datetime.fromtimestamp(int(timestamp_ms)/1000.0), # sentimental analysis
-        'language': language
+        'language': language,
+        'bare': bare_text
     }
 
 def preprocess_tweets(df: pd.DataFrame) -> pd.DataFrame:
@@ -61,7 +76,14 @@ def preprocess_tweets(df: pd.DataFrame) -> pd.DataFrame:
     
     # Drop the language column
     df_processed = df_processed.drop('language', axis=1)
-    
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = 'gg2013_processed.json'
+    output_path = os.path.join(current_dir, output_file)
+    print(f"Saving processed tweets to {output_path}")
+    df_processed.to_json(output_path, orient='records', force_ascii=False, indent=4)
+    print("Processing complete.")
+    print(f"After processing, {len(df_processed)} English tweets remain")
     return df_processed
 
 def main(input_file: str, output_file: str):
