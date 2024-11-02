@@ -1,0 +1,25 @@
+GOLDEN GLOBES 2013 SENTIMENT ANALYSIS
+
+1. HOSTS SENTIMENT
+=================
+Host: amy poehler
+Overall Reception: Very Positive (91.3%)
+
+Host: tina fey
+Overall Reception: Very Positive (90.7%)
+
+2. WINNERS SENTIMENT
+===================
+Winner (Best Motion Picture - Drama): argo
+Overall Reception: Very Positive (76.0%)
+
+Winner (Best Motion Picture - Musical or Comedy): les miserables
+Overall Reception: Very Positive (66.1%)
+
+Winner (Best Director): ben affleck
+Overall Reception: Very Positive (75.8%)
+
+3. PRESENTERS SENTIMENT
+=======================
+4. NOMINEES SENTIMENT
+====================

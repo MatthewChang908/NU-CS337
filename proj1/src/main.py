@@ -2,11 +2,12 @@ import json
 from collections import defaultdict
 import spacy
 from spacy.matcher import Matcher
-import re
-from collections import Counter
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 from awards import get_awards
+import os
+from preprocessing import load_tweets, preprocess_tweets
+from redcarpet import get_red_carpet  # Import the function
 # STEP 1: Get the winner of the award given the award and the nominees
 def get_winner(tweets, award, nominees):
     # Get all tweets
@@ -30,7 +31,7 @@ def get_winner(tweets, award, nominees):
             regex[nominee].append(reg)
 
     result = defaultdict(int) # mapping nominee to frequency
-    # Run the tweets thru the regex expressions
+    # Run the tweets through the regex expressions
     for tweet in tweets:
         found = False
         for nominee in regex:
@@ -48,7 +49,7 @@ def get_winner(tweets, award, nominees):
                     found = True
                     break
     
-    # Get the winner from the tweets thru max frequency
+    # Get the winner from the tweets through max frequency
     if not result:
         return ""
     return max(result, key=result.get)
@@ -80,42 +81,67 @@ def get_nominees(tweets, award):
 def get_presenters(tweets, award):
     return
 
-def __main__():
+# Part 3: Extract the award names from the tweets
+def get_awards(tweets):
+    return []
+
+
+# Note: Part 0 (Preprocessing) has been moved to before Part 3
+    # This ensures that the tweets are loaded and preprocessed before any analysis
+    # The 'tweets' variable is now available for use in subsequent parts
+    # revise if its not in the right place
+def process_tweet_text(tweet):
+    """Convert tweet dictionary to text for analysis"""
+    text = tweet.get('cleaned_text', '')
+    retweet = tweet.get('retweet_text', '')
+    # Combine cleaned text and retweet text if available
+    return f"{text} {retweet}".strip() if retweet else text
+
+def main():
+    # Part 0: Preprocess all tweets
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    tweets_file = 'gg2013.json'
+    input_path = os.path.join(current_dir, tweets_file)
+
+    print("Loading tweets...")
+    df = load_tweets(input_path)
+    print(f"Loaded {len(df)} tweets")
+
+    df_processed = preprocess_tweets(df)
+
+    # Convert processed tweets to list of dictionaries for analysis
+    tweets = df_processed.to_dict('records')
+    
+    # Load configuration
     config = None
-    with open ('/Users/matthewchang/NU/NU-CS337/proj1/src/config.json', 'r') as file:
+    config_path = os.path.join(current_dir, 'config.json')
+    with open(config_path, 'r') as file:
         config = json.load(file)
 
-    # List of all the tweets
-    tweets = []
-    
-    # Open the data
-    with open('/Users/matthewchang/NU/NU-CS337/proj1/src/gg2013.json', 'r') as file:
-        data = json.load(file)
-        for tweet in data:
-            text = tweet['text']
-            tweets.append(text)
+    # PART 3: Extract awards
+    # Convert tweets to text format for analysis
+    tweet_texts = [process_tweet_text(tweet) for tweet in tweets]
+    awards_names = get_awards(tweet_texts)
 
-    # PART 3
-    awards_names = get_awards(tweets)
+    # PART 2: Get nominees and presenters
+    awards = {}
+    for award in awards_names:
+        obj = {}
+        nominees = get_nominees(tweet_texts, award)
+        presenters = get_presenters(tweet_texts, award)
+        obj['name'] = award
+        obj['nominees'] = nominees
+        obj['presenters'] = presenters
+        awards[award] = obj
 
-    # # PART 2
-    # awards = {}
-    # awards_names = []
-    # for award in awards_names:
-    #     obj = {}
-    #     nominees = get_nominees(tweets, award)
-    #     presenters = get_presenters(tweets, award)
-    #     obj['name'] = award
-    #     obj['nominees'] = nominees
-    #     obj['presenters'] = presenters
-    #     awards[award] = obj
+    # PART 1: Get winners
+    awards = config['Awards']  # TODO: Replace with results from Part 2
+    results, nominees = get_all_winners(tweet_texts, awards)
+    print_all_winners(results, nominees)
 
-    # # PART 1
-    # awards = config['Awards'] # TODO: Replace with results from Part 2
-    # results, nominees = get_all_winners(tweets, awards)
-    # print_all_winners(results, nominees)
-
-    return
+    # redcarpet analysis
+    print("\nAnalyzing Red Carpet Fashion...")
+    get_red_carpet()  # Call the function directly
 
 if __name__ == "__main__":
-    __main__()
+    main()
