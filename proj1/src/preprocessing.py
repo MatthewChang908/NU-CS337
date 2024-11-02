@@ -14,6 +14,7 @@ def detect_language(text):
     return language
 
 def load_tweets(file_path: str, limit: int = None) -> pd.DataFrame:
+    limit = 1000
     # Load tweets from a JSON file into a pandas DataFrame, with an optional limit on the number of tweets.
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -49,7 +50,15 @@ def preprocess_and_extract_features(text: str, timestamp_ms: int) -> dict:
     # Remove hashtags and mentions for language detection
     text_for_lang_detect = re.sub(r'#\w+|@\w+', '', text_without_urls)
     language = detect_language(text_for_lang_detect)
+<<<<<<< HEAD
 
+=======
+    # Detect languagee
+    # try:
+    #     language = detect(text_for_lang_detect)
+    # except LangDetectException:
+    #     language = 'unknown'
+>>>>>>> de477042b674bb9ac522002022069e693a6e348b
     
     # Clean the text
     cleaned_text = re.sub(r'[^a-zA-Z0-9\s@#\']', '', text_without_urls)
