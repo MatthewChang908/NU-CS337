@@ -91,26 +91,70 @@ def format_sentiment_summary(entity_type, entity_name, stats):
     neg_percent = (stats['negative'] / stats['total']) * 100
     neu_percent = (stats['neutral'] / stats['total']) * 100
     
-    output = f"{entity_type}: {entity_name}\n"
-    output += f"- Total Mentions: {stats['total']}\n"
-    output += f"- Sentiment Overview:\n"
-    output += f"  * Positive: {pos_percent:.1f}%\n"
-    output += f"  * Negative: {neg_percent:.1f}%\n"
-    output += f"  * Neutral: {neu_percent:.1f}%\n"
+    # Calculate sentiment trend
+    def determine_reception(pos_percent, neg_percent):
+        if pos_percent - neg_percent > 30:
+            return "Very Positive"
+        elif pos_percent - neg_percent > 10:
+            return "Moderately Positive"
+        elif neg_percent - pos_percent > 30:
+            return "Very Negative"
+        elif neg_percent - pos_percent > 10:
+            return "Moderately Negative"
+        else:
+            return "Neutral"
     
-    # Add sentiment trend (if significant difference)
-    if pos_percent - neg_percent > 30:
-        output += "- Overall Reception: Very Positive\n"
-    elif pos_percent - neg_percent > 10:
-        output += "- Overall Reception: Moderately Positive\n"
-    elif neg_percent - pos_percent > 30:
-        output += "- Overall Reception: Very Negative\n"
-    elif neg_percent - pos_percent > 10:
-        output += "- Overall Reception: Moderately Negative\n"
-    else:
-        output += "- Overall Reception: Mixed\n"
+    # Get the reception result
+    reception = determine_reception(pos_percent, neg_percent)
+    
+    # Simplified output
+    output = f"{entity_type}: {entity_name}\n"
+    output += f"Overall Reception: {reception} ({pos_percent:.1f}%)\n"
     
     return output + "\n"
+
+def write_sentiment_results(sentiment_data, output_file='sentiment_analysis_results.txt'):
+    with open(output_file, 'w') as f:
+        # Hosts
+        f.write("1. HOSTS\n")
+        for host, data in sentiment_data['hosts'].items():
+            f.write(f"Host: {host}\n")
+            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+        
+        # Winners
+        f.write("2. WINNERS\n")
+        for category, winner_data in sentiment_data['winners'].items():
+            winner = winner_data['name']  # assume winner name is stored here
+            f.write(f"Winner ({category}): {winner}\n")
+            f.write(f"Overall Reception: {winner_data['overall_reception']} ({winner_data['positive_percentage']:.1f}%)\n\n")
+        
+        # Presenters
+        f.write("3. PRESENTERS\n")
+        for presenter, data in sentiment_data['presenters'].items():
+            f.write(f"Presenter: {presenter}\n")
+            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+        
+        # Nominees
+        f.write("4. NOMINEES\n")
+        for nominee, data in sentiment_data['nominees'].items():
+            f.write(f"Nominee: {nominee}\n")
+            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+
+def analyze_and_write_results(all_data, output_file='sentiment_analysis_results.txt'):
+    with open(output_file, 'w') as f:
+        # Hosts analysis
+        f.write("1. HOSTS\n")
+        for host, data in all_data['hosts'].items():
+            f.write(f"Host: {host}\n")
+            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+        
+        # Awards analysis
+        f.write("2. AWARDS\n")
+        for award, data in all_data['awards'].items():
+            f.write(f"Award: {award}\n")
+            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+        
+        
 
 def main():
     # Main function to analyze Golden Globes tweets
