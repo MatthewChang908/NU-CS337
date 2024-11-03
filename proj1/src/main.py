@@ -9,84 +9,11 @@ import os
 import pandas as pd
 from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet  # Import the function
+from process_awards import process
+from nominees import get_nominees
+from presenters import get_presenters
+from winners import get_all_winners, print_all_winners
 
-# STEP 1: Get the winner of the award given the award and the nominees
-def get_winner(tweets, award, nominees):
-    # Get all tweets
-    # Populate Regex expressions and get tweets that follow Nominee wins Award
-    regex_templates = [
-        "NOMINEE has won award for AWARD",
-        "NOMINEE has won the award for AWARD",
-        "NOMINEE wins award for AWARD",
-        "NOMINEE wins the award for AWARD",
-        "NOMINEE wins AWARD",
-        "AWARD award goes to NOMINEE",
-        "NOMINEE wins the AWARD award",
-        "AWARD goes to NOMINEE",
-        "AWARD won by NOMINEE"
-    ]
-    regex = defaultdict(list)
-
-    for nominee in nominees:
-        for template in regex_templates:
-            reg = template.replace("NOMINEE", nominee).replace("AWARD", award)
-            regex[nominee].append(reg)
-
-    result = defaultdict(int) # mapping nominee to frequency
-    # Run the tweets through the regex expressions
-    for tweet in tweets:
-        found = False
-        for nominee in regex:
-            if found: 
-                break # We can return if we already found a match
-            templates = regex[nominee]
-            for reg in templates:
-                if reg in tweet:
-                    result[nominee] += 1
-                    found = True
-                    break
-            if not found:
-                if nominee in tweet and award in tweet:
-                    result[nominee] += 1
-                    found = True
-                    break
-    
-    # Get the winner from the tweets through max frequency
-    if not result:
-        return ""
-    return max(result, key=result.get)
-
-def get_all_winners(tweets, awards):
-    results = {}
-    for award in awards:
-        nominees = award['nominees']
-        award_name = award['name']
-        winner = get_winner(tweets, award_name, nominees)
-        results[award_name] = winner
-    nominees = {}
-    for award in awards:
-        nominees[award['name']] = award['nominees']
-    return [results, nominees]
-
-def print_all_winners(results, nominees):
-    for award in results:
-        print("Award:", award)
-        print("Presenters WIP")
-        print("Nominees:", nominees[award])
-        print("Winner:", results[award])
-        print()
-
-# Part 2: Given the award name, return the nominees and the presenter
-def get_nominees(tweets, award):
-    return 
-
-def get_presenters(tweets, award):
-    return
-
-# Note: Part 0 (Preprocessing) has been moved to before Part 3
-    # This ensures that the tweets are loaded and preprocessed before any analysis
-    # The 'tweets' variable is now available for use in subsequent parts
-    # revise if its not in the right place
 def process_tweet_text(tweet):
     """Convert tweet dictionary to text for analysis"""
     text = tweet.get('cleaned_text', '')
@@ -112,7 +39,6 @@ def main():
         df_processed = pd.read_json('gg2013_processed.json')
     else:
         df_processed = preprocess_tweets(df)
-    # df_processed = preprocess_tweets(df)
     # Convert processed tweets to list of dictionaries for analysis
     tweets = df_processed.to_dict('records')
     
@@ -122,34 +48,31 @@ def main():
     with open(config_path, 'r') as file:
         config = json.load(file)
 
-    # PART 3: Extract awards from bare text
-    # Convert tweets to text format for analysis
+
+
     tweet_texts = [get_bare_text(tweet) for tweet in tweets]
-    awards_names = get_awards(tweet_texts)
-    print(f"Found {len(awards_names)} awards")
-    print("Awards:", awards_names)
-    awards_names = []
+    # awards_names = get_awards(tweet_texts)
+    # print(f"Found {len(awards_names)} awards")
+    # print("Awards:", awards_names)
     
-    return
+        
+    # Get presenteres
+    awards = process()
+    # presenters = get_presenters(tweet_texts, awards)
     
     
+    # Get nominees
+    # nominees = get_nominees(tweet_texts, awards)
+    # for award in nominees:
+    #     print("Nominee for", award, ":", nominees[award])
     # PART 2: Get nominees and presenters
     
-    awards = {}
-    for award in awards_names:
-        obj = {}
-        nominees = get_nominees(tweet_texts, award)
-        presenters = get_presenters(tweet_texts, award)
-        obj['name'] = award
-        obj['nominees'] = nominees
-        obj['presenters'] = presenters
-        awards[award] = obj
 
     # PART 1: Get winners
-    awards = config['Awards']  # TODO: Replace with results from Part 2
-    results, nominees = get_all_winners(tweet_texts, awards)
-    print_all_winners(results, nominees)
-
+    # TODO: Replace with results from Part 2
+    results = get_all_winners(tweet_texts, awards)
+    # print_all_winners(results, nominees)
+    return
     # redcarpet analysis
     print("\nAnalyzing Red Carpet Fashion...")
     get_red_carpet()  # Call the function directly

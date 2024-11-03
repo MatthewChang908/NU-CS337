@@ -31,8 +31,7 @@ def preprocess_and_extract_features(text: str, timestamp_ms: int) -> dict:
 
     # Extract hashtags and mentions before cleaning
     hashtags = re.findall(r'#(\w+)', text)
-    # remove hashtags
-    bare_text = re.sub(r'#\w+', '', bare_text)
+    bare_text = bare_text.replace('#', '')
 
     mentions = re.findall(r'@(\w+)', text)
     # remove mentions
