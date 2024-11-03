@@ -22,15 +22,12 @@ def preprocess_and_extract_features(text: str, timestamp_ms: int) -> dict:
     # Basic cleaning
     text = ftfy.fix_text(text)
     text = unicodedata.normalize('NFKD', text)
-    
     # Check if it's a retweet
     is_retweet = text.startswith('RT @')
     bare_text = text
     # remove retweet text
     if is_retweet:
-        print("old", bare_text)
         bare_text = " ".join(text.split()[2:])
-        print("new", bare_text)
 
     # Extract hashtags and mentions before cleaning
     hashtags = re.findall(r'#(\w+)', text)
@@ -48,13 +45,11 @@ def preprocess_and_extract_features(text: str, timestamp_ms: int) -> dict:
     # Remove hashtags and mentions for language detection
     text_for_lang_detect = re.sub(r'#\w+|@\w+', '', text_without_urls)
     language = detect_language(text_for_lang_detect)
-
-    
     # Clean the text
     cleaned_text = re.sub(r'[^a-zA-Z0-9\s@#\']', '', text_without_urls)
-    bare_text = re.sub(r'[^a-zA-Z0-9\s@#\']', '', bare_text)
-    cleaned_text = cleaned_text.strip()  # Remove extra whitespace
-    bare_text = bare_text.strip()
+    bare_text = re.sub(r'[^a-zA-Z0-9\s@#:!.\']', '', bare_text)
+    cleaned_text = " ".join(cleaned_text.split())
+    bare_text = " ".join(bare_text.split())
     return {
         'cleaned_text': cleaned_text,
         'hashtags': hashtags,

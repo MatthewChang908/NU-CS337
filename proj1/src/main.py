@@ -6,8 +6,10 @@ nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 from awards import get_awards
 import os
+import pandas as pd
 from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet  # Import the function
+
 # STEP 1: Get the winner of the award given the award and the nominees
 def get_winner(tweets, award, nominees):
     # Get all tweets
@@ -81,11 +83,6 @@ def get_nominees(tweets, award):
 def get_presenters(tweets, award):
     return
 
-# Part 3: Extract the award names from the tweets
-def get_awards(tweets):
-    return []
-
-
 # Note: Part 0 (Preprocessing) has been moved to before Part 3
     # This ensures that the tweets are loaded and preprocessed before any analysis
     # The 'tweets' variable is now available for use in subsequent parts
@@ -96,7 +93,9 @@ def process_tweet_text(tweet):
     retweet = tweet.get('retweet_text', '')
     # Combine cleaned text and retweet text if available
     return f"{text} {retweet}".strip() if retweet else text
-
+def get_bare_text(tweet):
+    """Extract the 'bare' text from a tweet dictionary"""
+    return tweet.get('bare', '')
 def main():
     # Part 0: Preprocess all tweets
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -107,8 +106,13 @@ def main():
     df = load_tweets(input_path)
     print(f"Loaded {len(df)} tweets")
 
-    df_processed = preprocess_tweets(df)
-
+    # check if gg2013_processed.json exists
+    if os.path.exists(os.path.join(current_dir, 'gg2013_processed.json')):
+        print("Processed tweets already exist. Skipping preprocessing.")
+        df_processed = pd.read_json('gg2013_processed.json')
+    else:
+        df_processed = preprocess_tweets(df)
+    # df_processed = preprocess_tweets(df)
     # Convert processed tweets to list of dictionaries for analysis
     tweets = df_processed.to_dict('records')
     
@@ -118,12 +122,19 @@ def main():
     with open(config_path, 'r') as file:
         config = json.load(file)
 
-    # PART 3: Extract awards
+    # PART 3: Extract awards from bare text
     # Convert tweets to text format for analysis
-    tweet_texts = [process_tweet_text(tweet) for tweet in tweets]
+    tweet_texts = [get_bare_text(tweet) for tweet in tweets]
     awards_names = get_awards(tweet_texts)
-
+    print(f"Found {len(awards_names)} awards")
+    print("Awards:", awards_names)
+    awards_names = []
+    
+    return
+    
+    
     # PART 2: Get nominees and presenters
+    
     awards = {}
     for award in awards_names:
         obj = {}

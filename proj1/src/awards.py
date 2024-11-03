@@ -1,110 +1,77 @@
 from collections import defaultdict
 import re
-import Levenshtein
-import openai
-
-api_key = "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"
-def identify_award_names(award_counts):
-    client = openai.Client(api_key=api_key)
-    award_counts_str = "\n".join([f"{award}: {count}" for award, count in award_counts.items()])
-
-    # Prepare prompt with the award data
-    prompt = (
-        "Based on the following list of potential award names with their frequency counts, "
-        "identify the names of the actual awards given at the Golden Globes:\n\n"
-    )
-    for award, count in award_counts.items():
-        prompt += f"{award}: {count}\n"
-    print("Sending prompt to OpenAI:")
-    print(prompt)
-    # Ask the model to identify likely award names
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system", 
-                "content": "You analyze award names and consolidate similar ones."
-            },
-            {
-                "role": "user", 
-                "content": "Based on the following list of potential award names with counts, identify the likely awards given at the Golden Globes."
-            },
-            {
-                "role": "user", 
-                "content": award_counts_str
-            }
-        ],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "award_name_schema",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "awards": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "award_name": {
-                                        "type": "string",
-                                        "description": "The name of a valid award'."
-                                    }
-                                },
-                                "required": ["award_name"],
-                                "additionalProperties": False
-                            }
-                        }
-                    },
-                    "required": ["awards"],
-                    "additionalProperties": False
-                }
-            }
-        }
-    )
-    print("Received response from OpenAI:")
-    print(response.choices[0].message.content)
-    # return response['choices'][0]['message']['content']
-    # response = openai.ChatCompletion.create(
-    #     model="gpt-4-turbo",
-    #     messages=[
-    #         {"role": "system", "content": "You are an assistant that identifies actual Golden Globes award names."},
-    #         {"role": "user", "content": prompt}
-    #     ]
-    # )
-    # return response['choices'][0]['message']['content'].strip()
-
+import spacy
+import json
+from imdb import IMDb
 def get_awards(tweets):
-    tweets = [tweet.lower() for tweet in tweets if "best" in tweet.lower() and not tweet.lower().startswith("rt")]
+    celebrity_names_set = set()
+    with open("recent_celebrity_names.json", "r") as f:
+        data = json.load(f)
+        celebrity_names_set = set(data["recent_celebrity_names"])
+    tweets = [tweet for tweet in tweets if "best" in tweet.lower()]
     patterns = [
-        r"\bBest\s.*?(?=\sgoes\b)",
-        r"\bwins\sbest\s.*?(?=(\s(for|to|at|and))|[.!?:\"#]|$)"
+        r"\bBest\s.*?(?=\s(?:goes|is|wins|win|of|award|awarded|part|for)\b|:)",
+        r"\bwins\sbest\s.*?(?=(\s(for|to|at|and|win|part|of))|[.!?:\"#]|$)",
+        r"\bnominated\sfor\sbest\s.*?(?=(\s(for|to|at|and|win|part|of))|[.!?:\"#]|$)"
     ]
     awards = defaultdict(int)
     for tweet in tweets:
+        # if "Maggie Smith" in tweet:
+        #     print("tweet", tweet)
         for pattern in patterns:
             match = re.search(pattern, tweet, re.IGNORECASE)
             if match:
                 award_name = match.group(0).strip()
-                if "best tv series - drama" in award_name:
-                    print(award_name)
-                if ":" in award_name or "\"" in award_name:
-                    break
+                # if "best actor in a miniseries or tv movie" in award_name:
+                #     print(tweet)
                 if award_name.startswith("wins"):
                     # remove it
                     award_name = award_name[5:]
-                
-                awards[award_name] += 1
+                elif award_name.startswith("nominated for best"):
+                    award_name = award_name[18:]
+                # if "Best Supporting Actress in a TV Movie Series or Miniseries goes to Maggie Smith for Downton Abbey" in tweet:
+                #     print("award name", award_name)
+                awards[award_name.lower()] += 1
                 break
     awards = [[k, v] for k, v in awards.items() if v > 1]
     print(len(awards))
     awards = sorted(awards, key=lambda x: x[1], reverse=True)
-    print(awards)
-    # res = identify_award_names({award: count for award, count in awards})
-    # print(res)
-    # awards = awards[:20]
-    # print("Top 20 Awards:")
-    # for k, v in awards:
-    #     print(k, v)
+    # remove all award names with a person entity with spacy
+    # nlp = spacy.load("en_core_web_sm")
+    # for i, award in enumerate(awards):
+
+    #     doc = nlp(award[0])
+    #     if "maggie smith" in award[0].lower():
+    #         print("this is a person", award)  
+    #         print(doc.ents)  
+    #     for ent in doc.ents:
+    #         if "maggie smith" in award[0].lower():
+    #             print("ent", ent)
+    #         if ent.label_ == "PERSON":
+    #             print("removed", award, "for", ent.text, "being a" , ent.label_)
+    #             print("ent", doc.ents)   
+    #             awards.pop(i)
+    award_names = [award[0] for award in awards]
+    print("awards:", award_names)
+    for i, award in enumerate(award_names):
+        words = award.split()
+        words = [word.capitalize() for word in words]
+        for i in range(len(words)):
+            found = False
+            for j in range(i+1, i+3):
+                if j > len(words):
+                    break
+                name = " ".join(words[i:j])
+                if name in celebrity_names_set:
+                    awards.pop(i)
+                    print("name found:", name, "deleted", award)
+                    found = True
+                    break
+            if found: break
+
+    awards = awards[:30]
+    print("Top 40 Awards:")
+    for k, v in awards:
+        print(k, v)
     # print(significant_clusters)
+    return []
