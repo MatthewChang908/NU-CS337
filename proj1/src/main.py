@@ -10,6 +10,34 @@ from nominees import get_nominees
 from presenters import get_presenters  
 from winners import get_all_winners
 
+AWARDS_LIST = [
+    "Best Motion Picture - Drama",
+    "Best Motion Picture - Musical or Comedy",
+    "Best Performance by an Actor in a Motion Picture - Drama",
+    "Best Performance by an Actress in a Motion Picture - Drama",
+    "Best Performance by an Actor in a Motion Picture - Musical or Comedy",
+    "Best Performance by an Actress in a Motion Picture - Musical or Comedy",
+    "Best Performance by an Actor in a Supporting Role in any Motion Picture",
+    "Best Performance by an Actress in a Supporting Role in any Motion Picture",
+    "Best Director - Motion Picture",
+    "Best Screenplay - Motion Picture",
+    "Best Original Score - Motion Picture",
+    "Best Original Song - Motion Picture",
+    "Best Animated Feature Film",
+    "Best Foreign Language Film",
+    "Best Television Series - Drama",
+    "Best Television Series - Musical or Comedy",
+    "Best Performance by an Actor in a Television Series - Drama",
+    "Best Performance by an Actress in a Television Series - Drama",
+    "Best Performance by an Actor in a Television Series - Musical or Comedy",
+    "Best Performance by an Actress in a Television Series - Musical or Comedy",
+    "Best Performance by an Actor in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television",
+    "Best Performance by an Actress in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television",
+    "Best Mini-Series or Motion Picture Made for Television",
+    "Best Performance by an Actor in a Mini-Series or Motion Picture Made for Television",
+    "Best Performance by an Actress in a Mini-Series or Motion Picture Made for Television",
+]
+
 def process_tweet_text(tweet):
     """Convert tweet dictionary to text for analysis"""
     text = tweet.get('cleaned_text', '')
@@ -52,22 +80,31 @@ def main():
         
     # Get presenteres
     awards = process()
-    # presenters = get_presenters(tweet_texts, awards)
 
     # PART 2: Get nominees and presenters
     # Get nominees
     nominees = get_nominees(tweet_texts, awards)
-
+    print("\nNominees:")
+    for award, noms in nominees.items():
+        print(f"{award}: {noms}")
     # Find presenters for each award
     presenters_dict = {}
-    for award in awards:
+    for award in AWARDS_LIST:
         presenters = get_presenters(tweets, award)
         if presenters:
             presenters_dict[award] = presenters
-
+    print("\nPresenters:")
+    for award, presenters in presenters_dict.items():
+        print(f"{award}: {presenters}")
+        
     # PART 1: Get winners
     # TODO: Replace with results from Part 2
     results = get_all_winners(tweet_texts, awards)
+    print("\nWinners:") 
+    for award, winner in results.items():
+        print(f"Award: {award}")
+        print(f"Winner: {winner}")
+        print()
     # redcarpet analysis
     print("\nAnalyzing Red Carpet Fashion...")
     get_red_carpet()  # Call the function directly
