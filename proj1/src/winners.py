@@ -91,16 +91,7 @@ def get_all_winners(tweets, awards):
         print("Award:", award)
         print("Winner:", winner)
         print()
-    print(results)
     return results
-
-def print_all_winners(results, nominees):
-    for award in results:
-        print("Award:", award)
-        print("Presenters WIP")
-        print("Nominees:", nominees[award])
-        print("Winner:", results[award])
-        print()
 
 def get_all_subphrases(sentence):
     words = sentence.split()

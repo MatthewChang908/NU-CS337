@@ -30,9 +30,10 @@ def main():
     print(f"Loaded {len(df)} tweets")
 
     # check if gg2013_processed.json exists
-    if os.path.exists(os.path.join(current_dir, 'gg2013_processed.json')):
+    path = os.path.join(current_dir, 'gg2013_processed.json')
+    if os.path.exists(path):
         print("Processed tweets already exist. Skipping preprocessing.")
-        df_processed = pd.read_json('gg2013_processed.json')
+        df_processed = pd.read_json(path)
     else:
         df_processed = preprocess_tweets(df)
     # Convert processed tweets to list of dictionaries for analysis
