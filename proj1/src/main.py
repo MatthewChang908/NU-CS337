@@ -1,18 +1,14 @@
 import json
-from collections import defaultdict
-import spacy
-from spacy.matcher import Matcher
-nlp = spacy.load("en_core_web_sm")
-matcher = Matcher(nlp.vocab)
-from awards import get_awards
 import os
 import pandas as pd
+
+from awards import get_awards
 from preprocessing import load_tweets, preprocess_tweets
-from redcarpet import get_red_carpet  # Import the function
+from redcarpet import get_red_carpet
 from process_awards import process
 from nominees import get_nominees
 from presenters import get_presenters
-from winners import get_all_winners, print_all_winners
+from winners import get_all_winners
 
 def process_tweet_text(tweet):
     """Convert tweet dictionary to text for analysis"""
