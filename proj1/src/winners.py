@@ -4,7 +4,6 @@ import spacy
 import json
 
 def get_winner(tweets, award):
-    print(award)
     tweets = [tweet for tweet in tweets if "wins" in tweet.lower() or "won" in tweet.lower() or "win" in tweet.lower() or "goes" in tweet.lower() or "won by" in tweet.lower()]
     nlp = spacy.load("en_core_web_sm")
     # Get all tweets
@@ -29,18 +28,21 @@ def get_winner(tweets, award):
     ]
     result = defaultdict(int)
     for tweet in tweets:
-        for a in award['formattted']:
+        for a in award['formatted']:
             # Process if award type is "Movie"
             if award['category'] == "Movie":
                 for template in person_first:
                     template = template.replace("AWARD", a)
                     if template in tweet:
-                        print("Template:", template, "tweet:", tweet)
                         first_part = tweet.split(template)[0]
                         subphrases = get_all_subphrases(first_part)
                         for s in subphrases:
                             if s in movies_set:
                                 result[s.lower()] += 1
+                        doc = nlp(first_part)
+                        entities = [ent.text.lower() for ent in doc.ents]
+                        for ent in entities:
+                            result[ent] += 1
 
                 for template in award_first:
                     template = template.replace("AWARD", a)
@@ -50,33 +52,39 @@ def get_winner(tweets, award):
                         for s in subphrases:
                             if s in movies_set:
                                 result[s.lower()] += 1
+                        doc = nlp(first_part)
+                        entities = [ent.text.lower() for ent in doc.ents]
+                        for ent in entities:
+                            result[ent] += 1
+
 
             # Process if award type is "Person"
             elif award['category'] == "Person":
                 for template in person_first:
                     template = template.replace("AWARD", a)
                     if template in tweet:
-                        print("Template:", template, "tweet:", tweet)
                         first_part = tweet.split(template)[0]
-                        subphrases = get_all_subphrases(first_part)
-                        # For "Person" awards, no need to check `movies_set`
+                        doc = nlp(first_part)
+                        entities = [ent.text.lower() for ent in doc.ents]
+                        for ent in entities:
+                            result[ent] += 1
 
                 for template in award_first:
                     template = template.replace("AWARD", a)
                     if template in tweet:
                         second_part = tweet.split(template)[1]
-                        subphrases = get_all_subphrases(second_part)
-                        # For "Person" awards, no need to check `movies_set`
+                        doc = nlp(second_part)
+                        entities = [ent.text.lower() for ent in doc.ents]
+                        for ent in entities:
+                            result[ent] += 1
+
     # Get the winner from the tweets through max frequency
-    print(result)
     if not result:
         return ""
     return max(result, key=result.get)
 
 def get_all_winners(tweets, awards):
     results = {}
-    # first 4 keys of awards:
-    awards = {k: awards[k] for k in list(awards)[:4]}
     for award in awards:
         winner = get_winner(tweets, awards[award])
         results[award] = winner

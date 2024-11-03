@@ -40,19 +40,20 @@ def process():
         "made for": "",
         " - " : " ",
         "any": "a",
-        "motion picture": "",
+        "motion picture": "picture",
+        "picture": "",
         "television": "tv",
     }
 
     for award in awards:
         temp = award.lower()
-        formatted_versions = [temp]  # Start with the original lowercase version
+        formatted_versions = set([temp])  # Start with the original lowercase version
         
         # Apply replacements incrementally to generate alternative formats
         for k, v in replacements.items():
             temp = temp.replace(k, v)
             temp = " ".join(temp.split())  # Remove any extra whitespace
-            formatted_versions.append(temp)
+            formatted_versions.add(temp)
 
         # Classify the award as "Movie" or "Person"
         if any(keyword in award.lower() for keyword in ["actor", "actress", "director"]):
@@ -60,7 +61,7 @@ def process():
         else:
             category = "Movie"
         
-        res[award]["formatted"] = formatted_versions
+        res[award]["formatted"] = list(formatted_versions)
         res[award]["category"] = category
         print(award, ":", res[award])
     return res

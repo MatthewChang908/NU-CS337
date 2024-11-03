@@ -48,31 +48,22 @@ def main():
     with open(config_path, 'r') as file:
         config = json.load(file)
 
-
-
     tweet_texts = [get_bare_text(tweet) for tweet in tweets]
-    # awards_names = get_awards(tweet_texts)
-    # print(f"Found {len(awards_names)} awards")
-    # print("Awards:", awards_names)
+    awards_names = get_awards(tweet_texts)
+    print("Awards:", awards_names)
     
         
     # Get presenteres
     awards = process()
     # presenters = get_presenters(tweet_texts, awards)
-    
-    
-    # Get nominees
-    # nominees = get_nominees(tweet_texts, awards)
-    # for award in nominees:
-    #     print("Nominee for", award, ":", nominees[award])
+
     # PART 2: Get nominees and presenters
-    
+    # Get nominees
+    nominees = get_nominees(tweet_texts, awards)
 
     # PART 1: Get winners
     # TODO: Replace with results from Part 2
     results = get_all_winners(tweet_texts, awards)
-    # print_all_winners(results, nominees)
-    return
     # redcarpet analysis
     print("\nAnalyzing Red Carpet Fashion...")
     get_red_carpet()  # Call the function directly
