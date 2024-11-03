@@ -7,7 +7,7 @@ from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet
 from process_awards import process
 from nominees import get_nominees
-from presenters import get_presenters
+from presenters import get_presenters  
 from winners import get_all_winners
 
 def process_tweet_text(tweet):
@@ -57,6 +57,13 @@ def main():
     # PART 2: Get nominees and presenters
     # Get nominees
     nominees = get_nominees(tweet_texts, awards)
+
+    # Find presenters for each award
+    presenters_dict = {}
+    for award in awards:
+        presenters = get_presenters(tweets, award)
+        if presenters:
+            presenters_dict[award] = presenters
 
     # PART 1: Get winners
     # TODO: Replace with results from Part 2
