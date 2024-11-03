@@ -93,18 +93,15 @@ def main():
         presenters = get_presenters(tweets, award)
         if presenters:
             presenters_dict[award] = presenters
-    print("\nPresenters:")
-    for award, presenters in presenters_dict.items():
-        print(f"{award}: {presenters}")
+    print("\nPresenters:", presenters_dict)
+    # for award, presenters in presenters_dict.items():
+    #     print(f"{award}: {presenters}")
         
     # PART 1: Get winners
     # TODO: Replace with results from Part 2
-    results = get_all_winners(tweet_texts, awards)
     print("\nWinners:") 
-    for award, winner in results.items():
-        print(f"Award: {award}")
-        print(f"Winner: {winner}")
-        print()
+    results = get_all_winners(tweet_texts, awards)
+
     # redcarpet analysis
     print("\nAnalyzing Red Carpet Fashion...")
     get_red_carpet()  # Call the function directly
