@@ -1,5 +1,0 @@
-pandas
-ftfy
-langdetect
-Unidecode
-spacy
