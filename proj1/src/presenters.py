@@ -3,14 +3,25 @@ from collections import defaultdict
 import json
 import os
 
-# Get the current directory and construct the correct path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-json_path = os.path.join(current_dir, 'gg2013.json')
+# Remove global variables and initialize in functions
+def get_json_path():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(current_dir, 'gg2013.json')
+
+def load_tweets(json_path=None):
+    # Load tweet data from JSON file
+    if json_path is None:
+        json_path = get_json_path()
+    
+    try:
+        with open(json_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: Could not find file at {json_path}")
+        return None
 
 def analyze_tweets_for_award(tweets, award):
-    """
     # Debug function to print actual tweets about presenters
-    """
     award = award.lower()
     print(f"\nSearching tweets for {award}...")
     
@@ -53,12 +64,15 @@ def analyze_tweets_for_award(tweets, award):
     
     return found > 0
 
-def get_presenters(tweets, award):
-    """
-    Refined presenter discovery system
-    """
+def get_presenters(tweets, award, json_file_path=None):
+    #Find presenters for a specific award
+    if json_file_path:
+        json_path = json_file_path
     presenter_candidates = defaultdict(int)
     award_lower = award.lower()
+    
+    # Print for debugging
+    print(f"Processing award: {award}")
     
     # Invalid words for filtering
     invalid_words = {'best', 'award', 'motion', 'picture', 'drama', 'musical', 'comedy', 
@@ -123,6 +137,8 @@ def get_presenters(tweets, award):
         expected_count = 2 if award == "best screenplay - motion picture" else 1
         presenters = [name for name, count in sorted_presenters if count >= 3][:expected_count]
     
+    # Print before returning
+    print(f"Found presenters for {award}: {presenters}")
     return presenters
 
 def test_with_real_data():
@@ -130,9 +146,8 @@ def test_with_real_data():
     Test the presenter discovery system
     """
     try:
-        print(f"Loading tweets from: {json_path}")
-        with open(json_path, 'r') as f:
-            tweets = json.load(f)
+        print(f"Loading tweets from: {get_json_path()}")
+        tweets = load_tweets()
         
         test_cases = {
             "best screenplay - motion picture": ["robert pattinson", "amanda seyfried"],
@@ -159,7 +174,28 @@ def test_with_real_data():
         print(f"\nOverall accuracy: {(total_accuracy/len(test_cases)):.2%}")
             
     except FileNotFoundError:
-        print(f"Error: Could not find file at {json_path}")
+        print(f"Error: Could not find file at {get_json_path()}")
+
+def get_presenter_results():
+    """
+    Main function to return all presenter results
+    """
+    tweets = load_tweets()
+    if not tweets:
+        return None
+        
+    results = {}
+    test_cases = {
+        "best screenplay - motion picture": ["robert pattinson", "amanda seyfried"],
+        "best director - motion picture": ["halle berry"],
+        "best motion picture - drama": ["julia roberts"]
+    }
+    
+    for award in test_cases.keys():
+        presenters = get_presenters(tweets, award)
+        results[award] = presenters
+    
+    return results
 
 if __name__ == "__main__":
-    test_with_real_data()
+    test_with_real_data() 
