@@ -87,15 +87,18 @@ def main():
     print("\nNominees:")
     for award, noms in nominees.items():
         print(f"{award}: {noms}")
-    # Find presenters for each award
+
+   # Find presenters for each award
     presenters_dict = {}
-    for award in AWARDS_LIST:
-        presenters = get_presenters(tweets, award)
+    for award in config['Awards']:  # use results from Part 2
+        award_name = award['name']
+        presenters = get_presenters(tweet_texts, award_name)
         if presenters:
-            presenters_dict[award] = presenters
-    print("\nPresenters:", presenters_dict)
-    # for award, presenters in presenters_dict.items():
-    #     print(f"{award}: {presenters}")
+            presenters_dict[award_name] = presenters
+    
+    print("\nPresenters for each award:")
+    for award_name, presenters in presenters_dict.items():
+        print(f"{award_name}: {presenters}")
         
     # PART 1: Get winners
     # TODO: Replace with results from Part 2
