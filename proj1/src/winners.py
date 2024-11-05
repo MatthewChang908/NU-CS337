@@ -84,6 +84,7 @@ def get_winner(tweets, award):
     return max(result, key=result.get)
 
 def get_all_winners(tweets, awards):
+    print("\nWinners:") 
     results = {}
     for award in awards:
         winner = get_winner(tweets, awards[award])

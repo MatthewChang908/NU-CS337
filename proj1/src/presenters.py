@@ -130,8 +130,8 @@ def get_presenters(tweets, award, json_file_path=None):
     presenters = []
     if presenter_candidates:
         sorted_presenters = sorted(presenter_candidates.items(), key=lambda x: x[1], reverse=True)
-        print(f"\nDebug info for {award}:")
-        print(f"Candidate presenters and their scores: {dict(sorted_presenters[:5])}")
+        # print(f"\nDebug info for {award}:")
+        # print(f"Candidate presenters and their scores: {dict(sorted_presenters[:5])}")
         
         # Filter by minimum score and take top presenters
         expected_count = 2 if award == "best screenplay - motion picture" else 1

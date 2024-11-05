@@ -12,7 +12,6 @@ def get_awards(tweets):
         r"\bBest\s.*?(?=\s(?:goes|is|wins|win|of|award|awarded|part|for)\b|:)",
         r"\bwins\sbest\s.*?(?=(\s(for|to|at|and|win|part|of))|[.!?:\"#]|$)",
     ]
-
     awards = defaultdict(int)
     for tweet in tweets:
         for pattern in patterns:
@@ -31,11 +30,7 @@ def get_awards(tweets):
     awards = [[k, v] for k, v in awards.items() if v > 1]
     print(len(awards))
     awards = sorted(awards, key=lambda x: x[1], reverse=True)
-    
-    award_names = [award[0] for award in awards]
     awards = post_process_awards(awards)
-    print([[k, v] for k, v in awards if "foreign" in k])
-
     awards = awards[:30]
     for k, v in awards:
         print(k.title())

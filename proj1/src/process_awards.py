@@ -63,5 +63,5 @@ def process():
         
         res[award]["formatted"] = list(formatted_versions)
         res[award]["category"] = category
-        print(award, ":", res[award])
+        # print(award, ":", res[award])
     return res

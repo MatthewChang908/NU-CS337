@@ -3,6 +3,7 @@ import os
 import pandas as pd
 
 from awards import get_awards
+from host import getHost
 from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet
 from process_awards import process
@@ -74,19 +75,17 @@ def main():
         config = json.load(file)
 
     tweet_texts = [get_bare_text(tweet) for tweet in tweets]
-    awards_names = get_awards(tweet_texts)
-    print("Awards:", awards_names)
     
-        
-#     # Get presenteres
-#     awards = process()
+    # HOSTS
+    host = getHost(tweet_texts)
+    
+    # AWARDS
 
-#     # PART 2: Get nominees and presenters
-#     # Get nominees
-#     nominees = get_nominees(tweet_texts, awards)
-#     print("\nNominees:")
-#     for award, noms in nominees.items():
-#         print(f"{award}: {noms}")
+    # get_awards(tweet_texts)
+    
+    # NOMINEES
+    awards = process()
+    # get_nominees(tweet_texts, awards)
 
 #    # Find presenters for each award
 #     presenters_dict = {}
@@ -102,12 +101,12 @@ def main():
         
 #     # PART 1: Get winners
 #     # TODO: Replace with results from Part 2
-#     print("\nWinners:") 
-#     results = get_all_winners(tweet_texts, awards)
+#     get_all_winners(tweet_texts, awards)
 
-    # # redcarpet analysis
-    # print("\nAnalyzing Red Carpet Fashion...")
-    # get_red_carpet()  # Call the function directly
+#     # redcarpet analysis
+#     print("\nAnalyzing Red Carpet Fashion...")
+#     get_red_carpet()  # Call the function directly
 
 if __name__ == "__main__":
+    
     main()
