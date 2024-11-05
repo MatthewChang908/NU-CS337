@@ -78,36 +78,36 @@ def main():
     print("Awards:", awards_names)
     
         
-    # Get presenteres
-    awards = process()
+#     # Get presenteres
+#     awards = process()
 
-    # PART 2: Get nominees and presenters
-    # Get nominees
-    nominees = get_nominees(tweet_texts, awards)
-    print("\nNominees:")
-    for award, noms in nominees.items():
-        print(f"{award}: {noms}")
+#     # PART 2: Get nominees and presenters
+#     # Get nominees
+#     nominees = get_nominees(tweet_texts, awards)
+#     print("\nNominees:")
+#     for award, noms in nominees.items():
+#         print(f"{award}: {noms}")
 
-   # Find presenters for each award
-    presenters_dict = {}
-    for award in config['Awards']:  # use results from Part 2
-        award_name = award['name']
-        presenters = get_presenters(tweet_texts, award_name)
-        if presenters:
-            presenters_dict[award_name] = presenters
+#    # Find presenters for each award
+#     presenters_dict = {}
+#     for award in config['Awards']:  # use results from Part 2
+#         award_name = award['name']
+#         presenters = get_presenters(tweet_texts, award_name)
+#         if presenters:
+#             presenters_dict[award_name] = presenters
     
-    print("\nPresenters for each award:")
-    for award_name, presenters in presenters_dict.items():
-        print(f"{award_name}: {presenters}")
+#     print("\nPresenters for each award:")
+#     for award_name, presenters in presenters_dict.items():
+#         print(f"{award_name}: {presenters}")
         
-    # PART 1: Get winners
-    # TODO: Replace with results from Part 2
-    print("\nWinners:") 
-    results = get_all_winners(tweet_texts, awards)
+#     # PART 1: Get winners
+#     # TODO: Replace with results from Part 2
+#     print("\nWinners:") 
+#     results = get_all_winners(tweet_texts, awards)
 
-    # redcarpet analysis
-    print("\nAnalyzing Red Carpet Fashion...")
-    get_red_carpet()  # Call the function directly
+    # # redcarpet analysis
+    # print("\nAnalyzing Red Carpet Fashion...")
+    # get_red_carpet()  # Call the function directly
 
 if __name__ == "__main__":
     main()
