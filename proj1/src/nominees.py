@@ -1,11 +1,14 @@
 from collections import defaultdict
 import spacy
 import json
+import re
 nlp = spacy.load("en_core_web_sm")
-
+import helpers as h
 # 'Safe Sound' is nominated for a GOLDEN GLOBE for Best Song! Thx HFPA HAPPY BDAY! 
 # It makes me so happy when movies like Django Unchained get nominated for Best Picture
-# Oh wow Argo wins best picture drama All films nominated were great 
+# Oh wow Argo wins best picture drama All films nominated were great
+# "Props to Ben Affleck for beating Quintin Terentino AND Stephen Spielberg twice in one night #Argo #GoldenGlobes
+
 # associate nominee names
 
 # award names: [tweets]
@@ -32,14 +35,24 @@ def get_nominees(tweets, awards):
     tweets = preprocess_tweets(tweets)
     
     # get films/celebs that were mentioned with being nominated for something
-    things_nominated = []
+    things_nominated = set()
     for tweet in tweets:
-        # TODO
-        break
+        doc = nlp(tweet)
+        possible_labels = ["PERSON", "ORG", "WORK_OF_ART"]
+        for ent in doc.ents:
+            if ent.label_ in possible_labels:
+                text = split_camel_case(ent.text)
+                text = remove_gg(text)
+                if text:
+                    things_nominated.add(text)
+    # print(things_nominated)
+    ppl = h.all_people(tweets, celebs_set)
+    print("all_people", ppl)
     
-    nominees = {}
-    for award in awards:
-        nominees[award] = get_nominees_counts(tweets, awards[award], movies_set, celebs_set)
+    
+    # nominees = {}
+    # for award in awards:
+    #     nominees[award] = get_nominees_counts(tweets, awards[award], movies_set, celebs_set)
         
     print("\nNominees:")
     # for award, noms in nominees.items():
@@ -68,20 +81,21 @@ def preprocess_tweets(tweets):
         "should have been",
         "should've been",
     ]
-    
     negative_phrases = [
         "oscars",
         "oscar",
         "academy",
         "not nominated"
     ]
-
     phrases_to_exclude = nominee_prediction_phrases + negative_phrases
-    
     tweets = [tweet for tweet in tweets if not any(phrase in tweet.lower() for phrase in phrases_to_exclude)]
-        
     # nominat as the prefix for nominate, nominated, nomination, etc
     tweets = [tweet for tweet in tweets if "nominat" in tweet or "nominee" in tweet]
-    print(f"Number of tweets: {len(tweets)}")
-    
     return tweets
+
+def split_camel_case(text):
+    return ' '.join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', text))
+
+def remove_gg(text):
+    # remove the words "golden globe" or "goldenglobe" from the text
+    return re.sub(r'golden ?globe', '', text, flags=re.IGNORECASE)

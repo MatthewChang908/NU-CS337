@@ -77,7 +77,7 @@ def main():
     tweet_texts = [get_bare_text(tweet) for tweet in tweets]
     
     # HOSTS
-    host = getHost(tweet_texts)
+    # host = getHost(tweet_texts)
     
     # AWARDS
 
@@ -85,7 +85,7 @@ def main():
     
     # NOMINEES
     awards = process()
-    # get_nominees(tweet_texts, awards)
+    get_nominees(tweet_texts, awards)
 
 #    # Find presenters for each award
 #     presenters_dict = {}
