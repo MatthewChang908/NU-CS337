@@ -1,201 +1,93 @@
-import re
 from collections import defaultdict
+import re
 import json
 import os
 
-# Remove global variables and initialize in functions
-def get_json_path():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(current_dir, 'gg2013.json')
-
-def load_tweets(json_path=None):
-    # Load tweet data from JSON file
-    if json_path is None:
-        json_path = get_json_path()
+def get_presenters(tweets, award):
+    """Get presenters for a specific award"""
+    # 1. Load celebrity names
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "recent_celebrity_names.json")
     
-    try:
-        with open(json_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Could not find file at {json_path}")
-        return None
+    with open(json_path, "r") as f:
+        data = json.load(f)
+        celebrity_names_set = {name.lower() for name in data["recent_celebrity_names"]}
 
-def analyze_tweets_for_award(tweets, award):
-    # Debug function to print actual tweets about presenters
-    award = award.lower()
-    print(f"\nSearching tweets for {award}...")
+    presenters = defaultdict(int)
     
-    # Search for tweets with presenter names
-    if "director" in award:
-        search_name = "halle berry"
-    elif "drama" in award:
-        search_name = "julia roberts"
+    # 2. Prepare keywords for matching
+    award_words = set(award.lower().split())
+    presenter_words = ['present', 'presents', 'presenting', 'announce', 'announces', 'announcing']
+    
+    # 3. Find relevant tweets
+    relevant_tweets = []
+    for tweet in tweets:
+        text = tweet['text'].lower()
+        # Relaxed condition: only need to match some award keywords
+        award_match = sum(1 for word in award_words if word in text)
+        if award_match >= 2 and any(p in text for p in presenter_words):
+            relevant_tweets.append(tweet['text'])
+    
+    # 4. Extract names from relevant tweets
+    name_pattern = r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)'
+    
+    for tweet in relevant_tweets:
+        # Find all possible names
+        names = re.findall(name_pattern, tweet)
+        
+        for name in names:
+            name = name.lower().strip()
+            if name in celebrity_names_set:
+                # Check name context
+                context = tweet.lower()[max(0, tweet.lower().find(name)-30):
+                                      min(len(tweet), tweet.lower().find(name)+30)]
+                
+                # Make sure this is a presenter not a winner
+                if any(p in context for p in presenter_words) and \
+                   not any(w in context for w in ['won', 'winner', 'wins']):
+                    # Increase weight based on context quality
+                    weight = 1
+                    if 'present' in context and any(w in context for w in award_words):
+                        weight = 2
+                    presenters[name] += weight
+    
+    # 5. Select presenters
+    sorted_presenters = sorted(presenters.items(), key=lambda x: (-x[1], x[0]))
+    
+    # Debug info
+    print(f"\nFound {len(relevant_tweets)} relevant tweets for {award}")
+    if presenters:
+        print("Top presenter candidates:")
+        for p, c in sorted_presenters[:5]:
+            print(f"- {p}: {c} points")
+    
+    # 6. Return results
+    if "cecil" in award.lower():
+        # Cecil award usually has only one presenter
+        return [p for p, c in sorted_presenters[:1] if c >= 2]
     else:
-        search_name = "robert pattinson"
-    
-    # Print tweets containing the presenter name
-    found = 0
-    for tweet in tweets:
-        if isinstance(tweet, dict):
-            text = tweet.get('text', '').lower()
-        else:
-            text = tweet.lower()
-            
-        if search_name in text and award in text:
-            print(f"\nFound tweet: {text}")
-            found += 1
-            if found >= 5:  # Show first 5 matches
-                break
-    
-    if found == 0:
-        print(f"No tweets found with {search_name} for {award}")
-        # Try broader search
-        for tweet in tweets:
-            if isinstance(tweet, dict):
-                text = tweet.get('text', '').lower()
-            else:
-                text = tweet.lower()
-                
-            if search_name in text:
-                print(f"\nFound tweet with just presenter name: {text}")
-                found += 1
-                if found >= 5:
-                    break
-    
-    return found > 0
-
-def get_presenters(tweets, award, json_file_path=None):
-    #Find presenters for a specific award
-    if json_file_path:
-        json_path = json_file_path
-    presenter_candidates = defaultdict(int)
-    award_lower = award.lower()
-    
-    # Print for debugging
-    print(f"Processing award: {award}")
-    
-    # Invalid words for filtering
-    invalid_words = {'best', 'award', 'motion', 'picture', 'drama', 'musical', 'comedy', 
-                    'actor', 'actress', 'director', 'cecil', 'demille', 'golden', 'globe'}
-    
-    # First pass: look for exact award matches
-    for tweet in tweets:
-        text = tweet.get('text', '') if isinstance(tweet, dict) else str(tweet)
-        text_lower = text.lower()
-        
-        # Only process tweets that mention both award and presenting
-        if award_lower in text_lower and 'present' in text_lower:
-            # Look for pairs of presenters
-            pair_matches = re.findall(
-                r"([A-Z][a-z]+ +[A-Z][a-z]+) +and +([A-Z][a-z]+ +[A-Z][a-z]+).*present", 
-                text, 
-                re.IGNORECASE
-            )
-            if pair_matches:
-                for pair in pair_matches:
-                    for name in pair:
-                        if name and len(name.split()) == 2:
-                            name_clean = ' '.join(name.lower().split())
-                            if not any(word in name_clean.split() for word in invalid_words):
-                                presenter_candidates[name_clean] += 5  # High score for pairs
-                
-            # Look for single presenters
-            single_matches = re.findall(
-                r"([A-Z][a-z]+ +[A-Z][a-z]+).*present", 
-                text, 
-                re.IGNORECASE
-            )
-            for name in single_matches:
-                if name and len(name.split()) == 2:
-                    name_clean = ' '.join(name.lower().split())
-                    if not any(word in name_clean.split() for word in invalid_words):
-                        presenter_candidates[name_clean] += 3
-    
-    # Second pass: look for known presenters if needed
-    if not presenter_candidates or max(presenter_candidates.values()) < 5:
-        known_presenters = {
-            "best screenplay - motion picture": ["robert pattinson", "amanda seyfried"],
-            "best director - motion picture": ["halle berry"],
-            "best motion picture - drama": ["julia roberts"]
-        }
-        
-        if award in known_presenters:
-            for name in known_presenters[award]:
-                for tweet in tweets:
-                    text = tweet.get('text', '') if isinstance(tweet, dict) else str(tweet)
-                    if name.lower() in text.lower() and ('present' in text.lower() or 'golden' in text.lower()):
-                        presenter_candidates[name.lower()] += 4
-    
-    # Get presenters with highest confidence
-    presenters = []
-    if presenter_candidates:
-        sorted_presenters = sorted(presenter_candidates.items(), key=lambda x: x[1], reverse=True)
-        # print(f"\nDebug info for {award}:")
-        # print(f"Candidate presenters and their scores: {dict(sorted_presenters[:5])}")
-        
-        # Filter by minimum score and take top presenters
-        expected_count = 2 if award == "best screenplay - motion picture" else 1
-        presenters = [name for name, count in sorted_presenters if count >= 3][:expected_count]
-    
-    # Print before returning
-    print(f"Found presenters for {award}: {presenters}")
-    return presenters
-
-def test_with_real_data():
-    """
-    Test the presenter discovery system
-    """
-    try:
-        print(f"Loading tweets from: {get_json_path()}")
-        tweets = load_tweets()
-        
-        test_cases = {
-            "best screenplay - motion picture": ["robert pattinson", "amanda seyfried"],
-            "best director - motion picture": ["halle berry"],
-            "best motion picture - drama": ["julia roberts"]
-        }
-        
-        print("\nTesting presenter discovery system...")
-        total_accuracy = 0
-        
-        for award, expected in test_cases.items():
-            discovered_presenters = get_presenters(tweets, award)
-            print(f"\nAward: {award}")
-            print(f"Discovered: {discovered_presenters}")
-            print(f"Expected: {expected}")
-            
-            correct = len(set(p.lower() for p in discovered_presenters) & 
-                        set(p.lower() for p in expected))
-            accuracy = correct / len(expected)
-            total_accuracy += accuracy
-            
-            print(f"Accuracy: {accuracy:.2%}")
-            
-        print(f"\nOverall accuracy: {(total_accuracy/len(test_cases)):.2%}")
-            
-    except FileNotFoundError:
-        print(f"Error: Could not find file at {get_json_path()}")
-
-def get_presenter_results():
-    """
-    Main function to return all presenter results
-    """
-    tweets = load_tweets()
-    if not tweets:
-        return None
-        
-    results = {}
-    test_cases = {
-        "best screenplay - motion picture": ["robert pattinson", "amanda seyfried"],
-        "best director - motion picture": ["halle berry"],
-        "best motion picture - drama": ["julia roberts"]
-    }
-    
-    for award in test_cases.keys():
-        presenters = get_presenters(tweets, award)
-        results[award] = presenters
-    
-    return results
+        # Other awards may have 1-2 presenters
+        result = []
+        for p, c in sorted_presenters[:2]:
+            if c >= 2:  # Need at least 2 points
+                result.append(p)
+        return result
 
 if __name__ == "__main__":
-    test_with_real_data() 
+    # Load tweets
+    with open(os.path.join(os.path.dirname(__file__), "gg2013.json"), "r") as f:
+        tweets = json.load(f)
+    
+    test_awards = [
+        "Best Motion Picture - Drama",
+        "Best Director - Motion Picture",
+        "Best Screenplay - Motion Picture",
+        "Best Foreign Language Film",
+        "Cecil B. DeMille Award"
+    ]
+    
+    print("\nTesting presenter detection...")
+    for award in test_awards:
+        presenters = get_presenters(tweets, award)
+        print(f"\nAward: {award}")
+        print(f"Presenters: {presenters}")
