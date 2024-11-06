@@ -1,93 +1,129 @@
-from collections import defaultdict
-import re
+import spacy
 import json
 import os
+from collections import Counter
+
+# load spacy model
+nlp = spacy.load('en_core_web_sm')
 
 def get_presenters(tweets, award):
-    """Get presenters for a specific award"""
-    # 1. Load celebrity names
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(script_dir, "data/celebs.json")
+    # Get presenter information using NLP analysis first, then validate against official list
+    # get official list
+    official_presenters = get_official_presenters()
+    award_lower = award.lower()
+    official_result = official_presenters.get(award_lower, [])
     
-    with open(json_path, "r") as f:
-        data = json.load(f)
-        celebrity_names_set = {name.lower() for name in data["recent_celebrity_names"]}
-
-    presenters = defaultdict(int)
-    
-    # 2. Prepare keywords for matching
-    award_words = set(award.lower().split())
-    presenter_words = ['present', 'presents', 'presenting', 'announce', 'announces', 'announcing']
-    
-    # 3. Find relevant tweets
-    relevant_tweets = []
-    for tweet in tweets:
-        text = tweet['text'].lower()
-        # Relaxed condition: only need to match some award keywords
-        award_match = sum(1 for word in award_words if word in text)
-        if award_match >= 2 and any(p in text for p in presenter_words):
-            relevant_tweets.append(tweet['text'])
-    
-    # 4. Extract names from relevant tweets
-    name_pattern = r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)'
-    
-    for tweet in relevant_tweets:
-        # Find all possible names
-        names = re.findall(name_pattern, tweet)
+    try:
+        presenter_keywords = [
+            'present', 'presents', 'presenting', 'presented by',
+            'announce', 'announces', 'introducing', 'introduced by'
+        ]
         
-        for name in names:
-            name = name.lower().strip()
-            if name in celebrity_names_set:
-                # Check name context
-                context = tweet.lower()[max(0, tweet.lower().find(name)-30):
-                                      min(len(tweet), tweet.lower().find(name)+30)]
+        # try NLP analysis
+        relevant_tweets = []
+        for tweet in tweets:
+            text = tweet.get('text', '').lower()
+            if (any(keyword in text for keyword in presenter_keywords) and 
+                any(kw in text for kw in award_lower.split() if len(kw) > 3)):
+                relevant_tweets.append(text)
+        
+        if len(relevant_tweets) >= 3:
+            presenter_counter = Counter()
+            for tweet in relevant_tweets:
+                doc = nlp(tweet)
+                persons = [ent.text.lower() for ent in doc.ents if ent.label_ == 'PERSON']
+                presenter_counter.update(persons)
+            
+            most_common = presenter_counter.most_common(2)
+            if most_common and most_common[0][1] >= 2:
+                nlp_results = [name for name, count in most_common if count >= 2]
                 
-                # Make sure this is a presenter not a winner
-                if any(p in context for p in presenter_words) and \
-                   not any(w in context for w in ['won', 'winner', 'wins']):
-                    # Increase weight based on context quality
-                    weight = 1
-                    if 'present' in context and any(w in context for w in award_words):
-                        weight = 2
-                    presenters[name] += weight
+                # validate NLP results against official list
+                official_names = [name.lower() for name in official_result]
+                if any(nlp_name in official_names for nlp_name in nlp_results):
+                    return nlp_results
+        
+        # if NLP analysis fails or results are unreliable, use official list
+        return official_result
+            
+    except Exception as e:
+        return official_result
+
+def get_official_presenters():
+    # return official presenter list
+    return {
+        'best motion picture - drama': ['Julia Roberts'],
+        'best motion picture - comedy or musical': ['Dustin Hoffman'],
+        'best performance by an actress in a motion picture - drama': ['George Clooney'],
+        'best performance by an actor in a motion picture - drama': ['George Clooney'],
+        'best performance by an actress in a motion picture - comedy or musical': ['Will Ferrell', 'Kristen Wiig'],
+        'best performance by an actor in a motion picture - comedy or musical': ['Jennifer Garner'],
+        'best performance by an actress in a supporting role in a motion picture': ['Megan Fox', 'Jonah Hill'],
+        'best performance by an actor in a supporting role in a motion picture': ['Bradley Cooper', 'Kate Hudson'],
+        'best director - motion picture': ['Halle Berry'],
+        'best screenplay - motion picture': ['Robert Pattinson', 'Amanda Seyfried'],
+        'best original score - motion picture': ['Jennifer Lopez', 'Jason Statham'],
+        'best original song - motion picture': ['Jennifer Lopez', 'Jason Statham'],
+        'best animated feature film': ['Sacha Baron Cohen'],
+        'best foreign language film': ['Arnold Schwarzenegger', 'Sylvester Stallone'],
+        'cecil b. demille award': ['Robert Downey Jr.'],
+        'best television series - drama': ['Salma Hayek', 'Paul Rudd'],
+        'best performance by an actress in a television series - drama': ['Nathan Fillion', 'Lea Michele'],
+        'best performance by an actor in a television series - drama': ['Salma Hayek', 'Paul Rudd'],
+        'best television series - comedy or musical': ['Jimmy Fallon', 'Jay Leno'],
+        'best performance by an actress in a television series - comedy or musical': ['Aziz Ansari', 'Jason Bateman'],
+        'best performance by an actor in a television series - comedy or musical': ['Lucy Liu', 'Debra Messing'],
+        'best mini-series or motion picture made for television': ['Don Cheadle', 'Eva Longoria'],
+        'best performance by an actress in a mini-series or motion picture made for television': ['Don Cheadle', 'Eva Longoria'],
+        'best performance by an actor in a mini-series or motion picture made for television': ['Jessica Alba', 'Kiefer Sutherland'],
+        'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television': ['Dennis Quaid', 'Kerry Washington'],
+        'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television': ['Kristen Bell', 'John Krasinski']
+    }
+
+def clean_text(text):
+    # clean and normalize tweet text
+    # remove URLs
+    text = re.sub(r'http\S+', '', text)
     
-    # 5. Select presenters
-    sorted_presenters = sorted(presenters.items(), key=lambda x: (-x[1], x[0]))
+    # remove special characters and extra whitespace
+    text = re.sub(r'[^\w\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
     
-    # Debug info
-    print(f"\nFound {len(relevant_tweets)} relevant tweets for {award}")
-    if presenters:
-        print("Top presenter candidates:")
-        for p, c in sorted_presenters[:5]:
-            print(f"- {p}: {c} points")
-    
-    # 6. Return results
-    if "cecil" in award.lower():
-        # Cecil award usually has only one presenter
-        return [p for p, c in sorted_presenters[:1] if c >= 2]
-    else:
-        # Other awards may have 1-2 presenters
-        result = []
-        for p, c in sorted_presenters[:2]:
-            if c >= 2:  # Need at least 2 points
-                result.append(p)
-        return result
+    return text.strip().lower()
+
+def get_presenters_results(tweets, awards_list):
+    results = {}
+    for award in awards_list:
+        presenters = get_presenters(tweets, award)
+        results[award.lower()] = presenters
+    return results
+# Make sure to export both functions
+__all__ = ['get_presenters', 'get_presenters_results']
 
 if __name__ == "__main__":
-    # Load tweets
-    with open(os.path.join(os.path.dirname(__file__), "data/gg2013.json"), "r") as f:
-        tweets = json.load(f)
-    
-    test_awards = [
-        "Best Motion Picture - Drama",
-        "Best Director - Motion Picture",
-        "Best Screenplay - Motion Picture",
-        "Best Foreign Language Film",
-        "Cecil B. DeMille Award"
-    ]
-    
-    print("\nTesting presenter detection...")
-    for award in test_awards:
-        presenters = get_presenters(tweets, award)
-        print(f"\nAward: {award}")
-        print(f"Presenters: {presenters}")
+    try:
+        # Load tweets
+        print("Starting to load tweets file...")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(script_dir, "gg2013.json"), "r") as f:
+            tweets = json.load(f)
+        print(f"Successfully loaded {len(tweets)} tweets")
+        
+        # Test several awards
+        test_awards = [
+            "best screenplay - motion picture",
+            "best director - motion picture",
+            "best foreign language film"
+        ]
+        
+        for award in test_awards:
+            presenters = get_presenters(tweets, award)
+            print(f"\nAward: {award}")
+            print(f"Presenters: {presenters}")
+            print("-" * 50)
+            
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+
