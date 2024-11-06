@@ -4,15 +4,12 @@ import json
 import spacy
 def get_awards(tweets):
     
-    print("original twweets length", len(tweets))
-    
     celebrity_names_set = set()
     with open("data/celebs.json", "r") as f:
         data = json.load(f)
         celebrity_names_set = set(data["recent_celebrity_names"])
     tweets = [tweet for tweet in tweets if "best" in tweet.lower()]
     
-    print("tweets length", len(tweets))
     patterns = [
         r"\bBest\s.*?(?=\s(?:goes|is|wins|win|of|award|awarded|part|for)\b|:)",
         r"\bwins\sbest\s.*?(?=(\s(for|to|at|and|win|part|of))|[.!?:\"#]|$)",
@@ -33,7 +30,6 @@ def get_awards(tweets):
                 awards[award_name] += 1
                 break
     awards = [[k, v] for k, v in awards.items() if v > 1]
-    print(len(awards))
     awards = sorted(awards, key=lambda x: x[1], reverse=True)
     awards = post_process_awards(awards)
     awards = awards[:30]
@@ -69,7 +65,6 @@ def post_process_awards(awards):
         temp_awards.append([" ".join(award), awards[i][1]])
 
     awards = temp_awards
-    print("best", [[k, v] for k, v in awards if "best" == k])
     for i in range(len(awards)):
         award = awards[i][0]
         for punct in stop_puncts:

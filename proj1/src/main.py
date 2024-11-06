@@ -50,68 +50,79 @@ def process_tweet_text(tweet):
 def get_bare_text(tweet):
     """Extract the 'bare' text from a tweet dictionary"""
     return tweet.get('bare', '')
-def main():
-    # Part 0: Preprocess all tweets
+
+def get_tweets(year):
+    """Get tweets for a given year"""
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    tweets_file = 'data/gg2013.json'
+    tweets_file = f'data/gg{year}.json'
     input_path = os.path.join(current_dir, tweets_file)
+    try:
+        df = load_tweets(input_path)
+        
+        path = os.path.join(current_dir, f'data/gg{year}_processed.json')
+        if os.path.exists(path):
+            print(f"Processed tweets for {year} already exist. Skipping preprocessing.")
+            df_processed = pd.read_json(path)
+        else:
+            df_processed = preprocess_tweets(df)
+            
+        print("Formatting tweets...")
+        tweets = df_processed.to_dict('records')
+        print("Done")
+        return tweets
+    except:
+        print(f"Error loading tweets for {year}. Please check the file and try again.")
+        return []
 
-    print("Loading tweets...")
-    df = load_tweets(input_path)
-    print(f"Loaded {len(df)} tweets")
-
-    # check if gg2013_processed.json exists
-    path = os.path.join(current_dir, 'data/gg2013_processed.json')
-    if os.path.exists(path):
-        print("Processed tweets already exist. Skipping preprocessing.")
-        df_processed = pd.read_json(path)
-    else:
-        df_processed = preprocess_tweets(df)
-    # Convert processed tweets to list of dictionaries for analysis
-    tweets = df_processed.to_dict('records')
-    
-    # Load configuration
-    config = None
-    config_path = os.path.join(current_dir, 'data/config.json')
-    with open(config_path, 'r') as file:
-        config = json.load(file)
-
-    tweet_texts = [get_bare_text(tweet) for tweet in tweets]
-    
-    # HOSTS
-    # host = getHost(tweet_texts)
-    
-    # AWARDS
-
-    # a.get_awards(tweet_texts)
-    
-    # NOMINEES
-    awards = process()
-    # get_nominees(tweet_texts, awards)
-
-    get_all_winners(tweet_texts, awards)
-
-    # Get presenters for all awards
-    presenters_dict = {}
-    print("\nPresenters:")
-    for award in AWARDS_LIST:
-        award_lower = award.lower()
-        presenters = get_presenters(tweets, award_lower)
-        if presenters:  # print the awards with presenters
-            print(f"{award}: {presenters}")  # print the awards and presenters
-        presenters_dict[award_lower] = presenters
-    
-    # Print red carpet results
-    print(get_red_carpet_results())  
-    
-    # call the interactive menu
-    show_menu(
-        tweets=tweets,
-        awards_list=AWARDS_LIST,
-        presenters_dict=presenters_dict
-    )
-
-
+def main():
+    while True:
+        print("\nWelcome to our Golden Globes project! Which year would you like to analyze?")
+        year = input("Please enter a year: ")
+        if not year.isdigit():
+            print("Invalid year. Please enter a valid year.")
+            continue
+        tweets = get_tweets(year)
+        if not tweets:
+            print("No tweets found for the specified year. Please try again.")
+            continue
+        tweet_texts = [get_bare_text(tweet) for tweet in tweets]
+        awards = process()
+        
+        print("\nWelcome to our Golden Globes project! What would you like to do?")
+        print("1. Show Host(s)")
+        print("2. Show Award Categories")
+        print("3. Show Presenters")
+        print("4. Show Nominees")
+        print("5. Show Winners")
+        print("6. Show Red Carpet Analysis")
+        print("7. Exit")
+        
+        choice = input("\nPlease enter a number (1-7): ")
+        
+        if choice == "1":
+            getHost(tweet_texts)
+        elif choice == "2":
+            a.get_awards(tweet_texts)
+        elif choice == "3":
+            presenters_dict = {}
+            print("\nPresenters:")
+            for award in AWARDS_LIST:
+                award_lower = award.lower()
+                presenters = get_presenters(tweets, award_lower)
+                if presenters:  # print the awards with presenters
+                    print(f"{award}: {presenters}")  # print the awards and presenters
+                presenters_dict[award_lower] = presenters
+        elif choice == "4":
+            get_nominees(tweet_texts, awards)
+        elif choice == "5":
+            get_all_winners(tweet_texts, awards)
+        elif choice == "6":
+            print(get_red_carpet_results())
+        elif choice == "7":
+            print("\nThank you for using our app!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 7.")
     
 if __name__ == "__main__":
     

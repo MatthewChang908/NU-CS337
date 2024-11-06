@@ -1,0 +1,229 @@
+{
+    "Best Motion Picture - Drama": {
+        "formatted": [
+            "best picture drama",
+            "best motion picture drama",
+            "best motion picture - drama"
+        ],
+        "category": "Movie"
+    },
+    "Best Motion Picture - Musical or Comedy": {
+        "formatted": [
+            "best picture musical or comedy",
+            "best motion picture musical or comedy",
+            "best motion picture - musical or comedy"
+        ],
+        "category": "Movie"
+    },
+    "Best Performance by an Actor in a Motion Picture - Drama": {
+        "formatted": [
+            "best actor in a motion picture - drama",
+            "best actor in a motion picture drama",
+            "best actor in a picture drama",
+            "best performance by an actor in a motion picture - drama"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Motion Picture - Drama": {
+        "formatted": [
+            "best performance by an actress in a motion picture - drama",
+            "best actress in a motion picture drama",
+            "best actress in a motion picture - drama",
+            "best actress in a picture drama"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actor in a Motion Picture - Musical or Comedy": {
+        "formatted": [
+            "best actor in a motion picture musical or comedy",
+            "best actor in a musical or comedy",
+            "best performance by an actor in a motion picture - musical or comedy",
+            "best actor in a motion picture - musical or comedy",
+            "best actor in a picture musical or comedy"
+
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Motion Picture - Musical or Comedy": {
+        "formatted": [
+            "best actress in a motion picture musical or comedy",
+            "best actress in a musical or comedy",
+            "best performance by an actress in a motion picture - musical or comedy",
+            "best actress in a motion picture - musical or comedy",
+            "best actress in a picture musical or comedy"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actor in a Supporting Role in any Motion Picture": {
+        "formatted": [
+            "best actor in a supporting role in any motion picture",
+            "best supporting actor in any motion picture",
+            "best performance by an actor in a supporting role in any motion picture",
+            "best supporting actor in a picture",
+            "best supporting actor in a motion picture",
+            "best supporting actor"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Supporting Role in any Motion Picture": {
+        "formatted": [
+            "best performance by an actress in a supporting role in any motion picture",
+            "best supporting actress in a picture",
+            "best supporting actress in any motion picture",
+            "best supporting actress in a motion picture",
+            "best actress in a supporting role in any motion picture",
+            "best supporting actress"
+        ],
+        "category": "Person"
+    },
+    "Best Director - Motion Picture": {
+        "formatted": [
+            "best director - motion picture",
+            "best director picture",
+            "best director motion picture"
+        ],
+        "category": "Person"
+    },
+    "Best Screenplay - Motion Picture": {
+        "formatted": [
+            "best screenplay - motion picture",
+            "best screenplay motion picture",
+            "best screenplay picture"
+        ],
+        "category": "Movie"
+    },
+    "Best Original Score - Motion Picture": {
+        "formatted": [
+            "best original score motion picture",
+            "best original score picture",
+            "best original score - motion picture"
+        ],
+        "category": "Movie"
+    },
+    "Best Original Song - Motion Picture": {
+        "formatted": [
+            "best original song motion picture",
+            "best original song - motion picture",
+            "best original song picture"
+        ],
+        "category": "Movie"
+    },
+    "Best Animated Feature Film": {
+        "formatted": [
+            "best animated feature film"
+        ],
+        "category": "Movie"
+    },
+    "Best Foreign Language Film": {
+        "formatted": [
+            "best foreign language film"
+        ],
+        "category": "Movie"
+    },
+    "Best Television Series - Drama": {
+        "formatted": [
+            "best television series drama",
+            "best tv series drama",
+            "best television series - drama"
+        ],
+        "category": "Movie"
+    },
+    "Best Television Series - Musical or Comedy": {
+        "formatted": [
+            "best tv series musical or comedy",
+            "best television series musical or comedy",
+            "best television series - musical or comedy"
+        ],
+        "category": "Movie"
+    },
+    "Best Performance by an Actor in a Television Series - Drama": {
+        "formatted": [
+            "best actor in a television series drama",
+            "best actor in a television series - drama",
+            "best actor in a tv series drama",
+            "best performance by an actor in a television series - drama"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Television Series - Drama": {
+        "formatted": [
+            "best actress in a tv series drama",
+            "best performance by an actress in a television series - drama",
+            "best actress in a television series - drama",
+            "best actress in a television series drama"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actor in a Television Series - Musical or Comedy": {
+        "formatted": [
+            "best actor in a television series musical or comedy",
+            "best actor in a television series comedy or musical",
+            "best actor in a comedy or musical tv series",
+            "best actor in a television series - musical or comedy",
+            "best actor in a tv series musical or comedy",
+            "best performance by an actor in a television series - musical or comedy"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Television Series - Musical or Comedy": {
+        "formatted": [
+            "best actress in a tv series musical or comedy",
+            "best actress in a tv series comedy or musical",
+            "best actress in a television series - musical or comedy",
+            "best actress in a television series musical or comedy",
+            "best performance by an actress in a television series - musical or comedy"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actor in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television": {
+        "formatted": [
+            "best performance by an actor in a supporting role in a series, miniseries or motion picture made for television",
+            "best supporting actor in a series, miniseries or picture television",
+            "best supporting actor in a series, miniseries or motion picture television",
+            "best supporting actor in a series, miniseries or motion picture made for television",
+            "best actor in a supporting role in a series, miniseries or motion picture made for television",
+            "best supporting actor in a series, miniseries or picture tv"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television": {
+        "formatted": [
+            "best performance by an actress in a supporting role in a series, miniseries or motion picture made for television",
+            "best supporting actress in a series, miniseries or motion picture made for television",
+            "best supporting actress in a series, miniseries or picture television",
+            "best supporting actress in a series, miniseries or motion picture television",
+            "best supporting actress in a series, miniseries or picture tv",
+            "best actress in a supporting role in a series, miniseries or motion picture made for television"
+        ],
+        "category": "Person"
+    },
+    "Best Mini-Series or Motion Picture Made for Television": {
+        "formatted": [
+            "best miniseries or picture tv",
+            "best miniseries or motion picture made for television",
+            "best miniseries or motion picture television",
+            "best miniseries or picture television"
+        ],
+        "category": "Movie"
+    },
+    "Best Performance by an Actor in a Mini-Series or Motion Picture Made for Television": {
+        "formatted": [
+            "best performance by an actor in a mini-series or motion picture made for television",
+            "best actor in a mini-series or picture tv",
+            "best actor in a mini-series or motion picture made for television",
+            "best actor in a mini-series or picture television",
+            "best actor in a mini-series or motion picture television"
+        ],
+        "category": "Person"
+    },
+    "Best Performance by an Actress in a Mini-Series or Motion Picture Made for Television": {
+        "formatted": [
+            "best actress in a mini-series or picture tv",
+            "best actress in a mini-series or motion picture made for television",
+            "best performance by an actress in a mini-series or motion picture made for television",
+            "best actress in a mini-series or motion picture television",
+            "best actress in a mini-series or picture television"
+        ],
+        "category": "Person"
+    }
+}
