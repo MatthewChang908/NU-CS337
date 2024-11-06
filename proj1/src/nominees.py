@@ -7,17 +7,17 @@ import helpers as h
 
 def get_nominees(tweets, awards):
     movies_set = set()
-    with open("movie_names.json", "r") as json_file:
+    with open("data/movie_names.json", "r") as json_file:
         movie_names = json.load(json_file)
         movies_set = set(movie_names)
     
     celebs_set = set()
-    with open("recent_celebrity_names.json", "r") as json_file:
+    with open("data/celebs.json", "r") as json_file:
         celebs = json.load(json_file)
         celebs_set = set(celebs['recent_celebrity_names'])
     
     shows_set = set()
-    with open("tv_shows.json", "r") as json_file:
+    with open("data/tv_shows.json", "r") as json_file:
         shows = json.load(json_file)
         shows_set = set(shows)
     

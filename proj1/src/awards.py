@@ -7,7 +7,7 @@ def get_awards(tweets):
     print("original twweets length", len(tweets))
     
     celebrity_names_set = set()
-    with open("recent_celebrity_names.json", "r") as f:
+    with open("data/celebs.json", "r") as f:
         data = json.load(f)
         celebrity_names_set = set(data["recent_celebrity_names"])
     tweets = [tweet for tweet in tweets if "best" in tweet.lower()]

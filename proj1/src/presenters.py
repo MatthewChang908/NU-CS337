@@ -7,7 +7,7 @@ def get_presenters(tweets, award):
     """Get presenters for a specific award"""
     # 1. Load celebrity names
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(script_dir, "recent_celebrity_names.json")
+    json_path = os.path.join(script_dir, "data/celebs.json")
     
     with open(json_path, "r") as f:
         data = json.load(f)
@@ -75,7 +75,7 @@ def get_presenters(tweets, award):
 
 if __name__ == "__main__":
     # Load tweets
-    with open(os.path.join(os.path.dirname(__file__), "gg2013.json"), "r") as f:
+    with open(os.path.join(os.path.dirname(__file__), "data/gg2013.json"), "r") as f:
         tweets = json.load(f)
     
     test_awards = [

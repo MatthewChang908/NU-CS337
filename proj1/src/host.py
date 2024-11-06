@@ -6,8 +6,7 @@ import numpy as np
 def getHost(tweets):
     tweets = preprocess(tweets)
     hosts = defaultdict(int)
-    
-    nlp = spacy.load("en_core_web_sm")
+
     celebs = getCelebs()
     for tweet in tweets:
         split_tweet = tweet.split()
@@ -44,7 +43,7 @@ def preprocess(tweets):
 
 def getCelebs():
     celebs = set()
-    with open("recent_celebrity_names.json", "r") as json_file:
+    with open("data/celebs.json", "r") as json_file:
         celebs = json.load(json_file)
         celebs = set(celebs['recent_celebrity_names'])
     return celebs

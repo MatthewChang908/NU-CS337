@@ -1,0 +1,145 @@
+{
+    "Awards": [
+        {
+            "name": "Best Drama",
+            "nominees": [
+            "Argo",
+            "Django Unchained",
+            "Life of Pi",
+            "Lincoln",
+            "Zero Dark Thirty"
+            ]
+        },
+        {
+            "name": "Best Comedy or Musical",
+            "nominees": [
+            "The Best Exotic Marigold Hotel",
+            "Moonrise Kingdom",
+            "Les Miserables",
+            "Salmon Fishing in the Yemen",
+            "Silver Linings Playbook"
+            ]
+        },
+        {
+            "name": "Best Screenplay",
+            "nominees": [
+            "Argo",
+            "Django Unchained",
+            "Lincoln",
+            "Silver Linings Playbook",
+            "Zero Dark Thirty"
+            ]
+        },
+        {
+            "name": "Best Director",
+            "nominees": [
+            "Ben Affleck",
+            "Kathryn Bigelow",
+            "Ang Lee",
+            "Steven Spielberg",
+            "Quentin Tarantino"
+            ]
+        },
+        {
+            "name": "Best Actor in a Drama",
+            "nominees": [
+            "Daniel Day-Lewis",
+            "Richard Gere",
+            "John Hawkes",
+            "Joaquin Phoenix",
+            "Denzel Washington"
+            ]
+        },
+        {
+            "name": "Best Actress in a Drama",
+            "nominees": [
+            "Jessica Chastain",
+            "Marion Cotillard",
+            "Helen Mirren",
+            "Naomi Watts",
+            "Rachel Weisz"
+            ]
+        },
+        {
+            "name": "Best Actor in a Motion Picture - Comedy or Musical",
+            "nominees": [
+            "Jack Black",
+            "Hugh Jackman",
+            "Bradley Cooper",
+            "Bill Murray",
+            "Ewan MacGregor"
+            ]
+        },
+        {
+            "name": "Best Actress in a Motion Picture - Comedy or Musical",
+            "nominees": [
+            "Emily Blunt",
+            "Judi Dench",
+            "Jennifer Lawrence",
+            "Maggie Smith",
+            "Meryl Streep"
+            ]
+        },
+        {
+            "name": "Best Supporting Actress",
+            "nominees": [
+            "Amy Adams",
+            "Sally Field",
+            "Anne Hathaway",
+            "Helen Hunt",
+            "Nicole Kidman"
+            ]
+        },
+        {
+            "name": "Best Supporting Actor",
+            "nominees": [
+            "Alan Arkin",
+            "Leonardo DiCaprio",
+            "Philip Seymour Hoffman",
+            "Tommy Lee Jones",
+            "Christoph Waltz"
+            ]
+        },
+        {
+            "name": "Best Foreign Film",
+            "nominees": [
+            "Amour",
+            "A Royal Affair",
+            "Kon-Tiki",
+            "Rust and Bone",
+            "Untouchable"
+            ]
+        },
+        {
+            "name": "Best Animated Feature Film",
+            "nominees": [
+            "Brave",
+            "Frankenweenie",
+            "Hotel Transylvania",
+            "Rise of the Guardians",
+            "Wreck-It Ralph"
+            ]
+        },
+        {
+            "name": "Best Original Score",
+            "nominees": [
+            "Life of Pi",
+            "Argo",
+            "Anna Karenina",
+            "Cloud Atlas",
+            "Lincoln"
+            ]
+        },
+        {
+            "name": "Best Original Song",
+            "nominees": [
+            "For You",
+            "Not Running Anymore",
+            "Safe and Sound",
+            "Skyfall",
+            "Suddenly"
+            ]
+        }
+    ]
+}
+  

@@ -41,7 +41,6 @@ def process():
         " - " : " ",
         "any": "a",
         "motion picture": "picture",
-        "picture": "",
         "television": "tv",
     }
 
@@ -63,5 +62,4 @@ def process():
         
         res[award]["formatted"] = list(formatted_versions)
         res[award]["category"] = category
-        # print(award, ":", res[award])
     return res

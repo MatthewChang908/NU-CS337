@@ -51,7 +51,7 @@ def get_bare_text(tweet):
 def main():
     # Part 0: Preprocess all tweets
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    tweets_file = 'gg2013.json'
+    tweets_file = 'data/gg2013.json'
     input_path = os.path.join(current_dir, tweets_file)
 
     print("Loading tweets...")
@@ -59,7 +59,7 @@ def main():
     print(f"Loaded {len(df)} tweets")
 
     # check if gg2013_processed.json exists
-    path = os.path.join(current_dir, 'gg2013_processed.json')
+    path = os.path.join(current_dir, 'data/gg2013_processed.json')
     if os.path.exists(path):
         print("Processed tweets already exist. Skipping preprocessing.")
         df_processed = pd.read_json(path)
@@ -70,7 +70,7 @@ def main():
     
     # Load configuration
     config = None
-    config_path = os.path.join(current_dir, 'config.json')
+    config_path = os.path.join(current_dir, 'data/config.json')
     with open(config_path, 'r') as file:
         config = json.load(file)
 
@@ -85,7 +85,7 @@ def main():
     
     # NOMINEES
     awards = process()
-    get_nominees(tweet_texts, awards)
+    # get_nominees(tweet_texts, awards)
 #    # Find presenters for each award
     # presenters_dict = {}
     # for award in config['Awards']:  # use results from Part 2
@@ -100,7 +100,7 @@ def main():
 
 #     # PART 1: Get winners
 #     # TODO: Replace with results from Part 2
-    # get_all_winners(tweet_texts, awards)
+    get_all_winners(tweet_texts, awards)
 
 #     # redcarpet analysis
 #     print("\nAnalyzing Red Carpet Fashion...")

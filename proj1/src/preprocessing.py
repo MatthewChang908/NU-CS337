@@ -71,7 +71,7 @@ def preprocess_tweets(df: pd.DataFrame) -> pd.DataFrame:
     df_processed = df_processed.drop('language', axis=1)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_file = 'gg2013_processed.json'
+    output_file = 'data/gg2013_processed.json'
     output_path = os.path.join(current_dir, output_file)
     print(f"Saving processed tweets to {output_path}")
     df_processed.to_json(output_path, orient='records', force_ascii=False, indent=4)
@@ -103,6 +103,6 @@ def main(input_file: str, output_file: str):
     print("Processing complete.")
 
 if __name__ == "__main__":
-    input_file = 'gg2013.json'
-    output_file = 'gg2013_processed.json'
+    input_file = 'data/gg2013.json'
+    output_file = 'data/gg2013_processed.json'
     main(input_file, output_file)  

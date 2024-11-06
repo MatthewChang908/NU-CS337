@@ -9,9 +9,20 @@ def get_winner(tweets, award):
     # Get all tweets
     # Populate Regex expressions and get tweets that follow Nominee wins Award  
     
-    with open("movie_names.json", "r") as json_file:
+    movies_set = set()
+    with open("data/movie_names.json", "r") as json_file:
         movie_names = json.load(json_file)
         movies_set = set(movie_names)
+    
+    celebs_set = set()
+    with open("data/celebs.json", "r") as json_file:
+        celebs = json.load(json_file)
+        celebs_set = set(celebs['recent_celebrity_names'])
+    
+    shows_set = set()
+    with open("data/tv_shows.json", "r") as json_file:
+        shows = json.load(json_file)
+        shows_set = set(shows)
 
     person_first = [
         "has won award for AWARD",
@@ -29,7 +40,7 @@ def get_winner(tweets, award):
     result = defaultdict(int)
     for tweet in tweets:
         for a in award['formatted']:
-            # Process if award type is "Movie"
+            # Process if award type is "Movie/song"
             if award['category'] == "Movie":
                 for template in person_first:
                     template = template.replace("AWARD", a)
@@ -52,7 +63,7 @@ def get_winner(tweets, award):
                         for s in subphrases:
                             if s in movies_set:
                                 result[s.lower()] += 1
-                        doc = nlp(first_part)
+                        doc = nlp(second_part)
                         entities = [ent.text.lower() for ent in doc.ents]
                         for ent in entities:
                             result[ent] += 1
@@ -77,7 +88,7 @@ def get_winner(tweets, award):
                         entities = [ent.text.lower() for ent in doc.ents]
                         for ent in entities:
                             result[ent] += 1
-
+    print(result)
     # Get the winner from the tweets through max frequency
     if not result:
         return ""
@@ -92,6 +103,7 @@ def get_all_winners(tweets, awards):
         print("Award:", award)
         print("Winner:", winner)
         print()
+        break
     return results
 
 def get_all_subphrases(sentence):
