@@ -7,7 +7,7 @@ from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet_results
 from process_awards import process
 from nominees import get_nominees
-from presenters import get_presenters
+from presenters import get_all_presenters
 from awards import get_awards
 from interactive_menu import show_menu
 from winners import get_all_winners
@@ -104,14 +104,7 @@ def main():
         elif choice == "2":
             a.get_awards(tweet_texts)
         elif choice == "3":
-            presenters_dict = {}
-            print("\nPresenters:")
-            for award in AWARDS_LIST:
-                award_lower = award.lower()
-                presenters = get_presenters(tweets, award_lower)
-                if presenters:  # print the awards with presenters
-                    print(f"{award}: {presenters}")  # print the awards and presenters
-                presenters_dict[award_lower] = presenters
+            get_all_presenters(tweets, AWARDS_LIST)
         elif choice == "4":
             get_nominees(tweet_texts, awards)
         elif choice == "5":
