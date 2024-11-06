@@ -4,10 +4,12 @@ import pandas as pd
 
 from host import getHost
 from preprocessing import load_tweets, preprocess_tweets
-from redcarpet import get_red_carpet
+from redcarpet import get_red_carpet_results
 from process_awards import process
 from nominees import get_nominees
-from presenters import get_presenters  
+from presenters import get_presenters
+from awards import get_awards
+from interactive_menu import show_menu
 from winners import get_all_winners
 import awards as a
 
@@ -86,25 +88,30 @@ def main():
     # NOMINEES
     awards = process()
     # get_nominees(tweet_texts, awards)
-#    # Find presenters for each award
-    # presenters_dict = {}
-    # for award in config['Awards']:  # use results from Part 2
-    #     award_name = award['name']
-    #     presenters = get_presenters(tweet_texts, award_name)
-    #     if presenters:
-    #         presenters_dict[award_name] = presenters
-    
-    # print("\nPresenters for each award:")
-    # for award_name, presenters in presenters_dict.items():
-    #     print(f"{award_name}: {presenters}")
 
-#     # PART 1: Get winners
-#     # TODO: Replace with results from Part 2
     get_all_winners(tweet_texts, awards)
 
-#     # redcarpet analysis
-#     print("\nAnalyzing Red Carpet Fashion...")
-#     get_red_carpet()  # Call the function directly
+    # Get presenters for all awards
+    presenters_dict = {}
+    print("\nPresenters:")
+    for award in AWARDS_LIST:
+        award_lower = award.lower()
+        presenters = get_presenters(tweets, award_lower)
+        if presenters:  # print the awards with presenters
+            print(f"{award}: {presenters}")  # print the awards and presenters
+        presenters_dict[award_lower] = presenters
+    
+    # Print red carpet results
+    print(get_red_carpet_results())  
+    
+    # call the interactive menu
+    show_menu(
+        tweets=tweets,
+        awards_list=AWARDS_LIST,
+        presenters_dict=presenters_dict
+    )
+
+
     
 if __name__ == "__main__":
     
