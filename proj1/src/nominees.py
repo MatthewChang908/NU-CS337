@@ -32,49 +32,69 @@ def get_nominees(tweets, awards):
         celebs = json.load(json_file)
         celebs_set = set(celebs['recent_celebrity_names'])
     
+    shows_set = set()
+    with open("tv_shows.json", "r") as json_file:
+        shows = json.load(json_file)
+        shows_set = set(shows)
+    
     tweets = preprocess_tweets(tweets)
     
     # get films/celebs that were mentioned with being nominated for something
-    things_nominated = set()
+    things = set()
     for tweet in tweets:
-        doc = nlp(tweet)
-        possible_labels = ["PERSON", "ORG", "WORK_OF_ART"]
-        for ent in doc.ents:
-            if ent.label_ in possible_labels:
-                text = split_camel_case(ent.text)
-                text = remove_gg(text)
-                if text:
-                    things_nominated.add(text)
-    # print(things_nominated)
-    ppl = h.all_people(tweets, celebs_set)
-    print("all_people", ppl)
-    
-    
-    # nominees = {}
-    # for award in awards:
-    #     nominees[award] = get_nominees_counts(tweets, awards[award], movies_set, celebs_set)
+        # doc = nlp(tweet)
+        # possible_labels = ["PERSON", "ORG", "WORK_OF_ART"]
+
+        # for ent in doc.ents:
+        #     if ent.label_ in possible_labels:
+        #         text = split_camel_case(ent.text)
+        #         text = remove_gg(text)
+        #         if text:
+        #             things_nominated.add(text)
         
+        movies = h.get_movie_from_set(tweet, movies_set)
+        people = h.get_person_from_set(tweet, celebs_set)
+        shows = h.get_tv_from_set(tweet, shows_set)
+        
+        things = things.union(movies)
+        things = things.union(people)
+        things = things.union(shows)
+    print(len(things))
+    
+    nominees = {}
+    for award in awards:
+        nominees[award] = get_nominees_counts(tweets, awards[award], things)
+        break
     print("\nNominees:")
     # for award, noms in nominees.items():
     #     print(f"{award}: {noms}")
     
-def get_nominees_counts(tweets, award, movies_set, celebs_set):
-    alternatives = award['formatted']
+def get_nominees_counts(tweets, award, things):
+    award_names = award['formatted']
     nominees = defaultdict(int)
     for tweet in tweets:
-        for alt in alternatives:
-            if alt in tweet:
-                doc = nlp(tweet)
-                for ent in doc.ents:
-                    nominees[ent.text] += 1
+            
+        for alt in award_names:
+            if alt in tweet.lower():
+                split_tweet = tweet.split()
+                for i in range(len(split_tweet)):
+                    for j in range(i+1, len(split_tweet)):
+                        substring = " ".join(split_tweet[i:j])
+                        if substring in things:
+                            nominees[substring] += 1
+                
+                        
+            
+    print(nominees)
+    return 0
     # return a list of the top 5 nominees
-    sorted_nominees = sorted(nominees.items(), key=lambda x: x[1], reverse=True)
-    category = award['category']
-    if category == 'Movie':
-        return [nominee for nominee, count in sorted_nominees[:5] if nominee in movies_set]
-    elif category == 'Person':
-        return [nominee for nominee, count in sorted_nominees[:5] if nominee in celebs_set]
-    return [nominee for nominee, count in sorted_nominees[:5]]
+    # sorted_nominees = sorted(nominees.items(), key=lambda x: x[1], reverse=True)
+    # category = award['category']
+    # if category == 'Movie':
+    #     return [nominee for nominee, count in sorted_nominees[:5] if nominee in movies_set]
+    # elif category == 'Person':
+    #     return [nominee for nominee, count in sorted_nominees[:5] if nominee in celebs_set]
+    # return [nominee for nominee, count in sorted_nominees[:5]]
 
 def preprocess_tweets(tweets):
     nominee_prediction_phrases = [

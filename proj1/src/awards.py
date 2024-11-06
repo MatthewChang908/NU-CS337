@@ -3,11 +3,16 @@ import re
 import json
 import spacy
 def get_awards(tweets):
+    
+    print("original twweets length", len(tweets))
+    
     celebrity_names_set = set()
     with open("recent_celebrity_names.json", "r") as f:
         data = json.load(f)
         celebrity_names_set = set(data["recent_celebrity_names"])
     tweets = [tweet for tweet in tweets if "best" in tweet.lower()]
+    
+    print("tweets length", len(tweets))
     patterns = [
         r"\bBest\s.*?(?=\s(?:goes|is|wins|win|of|award|awarded|part|for)\b|:)",
         r"\bwins\sbest\s.*?(?=(\s(for|to|at|and|win|part|of))|[.!?:\"#]|$)",
