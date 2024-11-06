@@ -4,22 +4,6 @@ import json
 import re
 nlp = spacy.load("en_core_web_sm")
 import helpers as h
-# 'Safe Sound' is nominated for a GOLDEN GLOBE for Best Song! Thx HFPA HAPPY BDAY! 
-# It makes me so happy when movies like Django Unchained get nominated for Best Picture
-# Oh wow Argo wins best picture drama All films nominated were great
-# "Props to Ben Affleck for beating Quintin Terentino AND Stephen Spielberg twice in one night #Argo #GoldenGlobes
-
-# associate nominee names
-
-# award names: [tweets]
-# entities: [tweets]
-# find overlap?
-# tweets: [award name, entity]
-
-# create a map of entities to tweets with the word nominate
-# for each award, find the entities that are in the tweets
-# count the number of times each entity appears
-# return the top 5 entities
 
 def get_nominees(tweets, awards):
     movies_set = set()
@@ -40,34 +24,34 @@ def get_nominees(tweets, awards):
     tweets = preprocess_tweets(tweets)
     
     # get films/celebs that were mentioned with being nominated for something
-    things = set()
+    things = defaultdict(int)
     for tweet in tweets:
-        # doc = nlp(tweet)
-        # possible_labels = ["PERSON", "ORG", "WORK_OF_ART"]
-
-        # for ent in doc.ents:
-        #     if ent.label_ in possible_labels:
-        #         text = split_camel_case(ent.text)
-        #         text = remove_gg(text)
-        #         if text:
-        #             things_nominated.add(text)
+        
         
         movies = h.get_movie_from_set(tweet, movies_set)
         people = h.get_person_from_set(tweet, celebs_set)
         shows = h.get_tv_from_set(tweet, shows_set)
         
-        things = things.union(movies)
-        things = things.union(people)
-        things = things.union(shows)
-    print(len(things))
+        for movie in movies:
+            things[movie] += 1
+            
+        for person in people:
+            things[person] += 1
+        
+        for show in shows:
+            things[show] += 1
+    # print(len(things))
     
     nominees = {}
     for award in awards:
         nominees[award] = get_nominees_counts(tweets, awards[award], things)
-        break
     print("\nNominees:")
-    # for award, noms in nominees.items():
-    #     print(f"{award}: {noms}")
+    for award, noms in nominees.items():
+        if noms:
+            noms = ", ".join([nom[0] for nom in noms])
+        else:
+            noms = "None Found"
+        print(f"{award}: {noms}")
     
 def get_nominees_counts(tweets, award, things):
     award_names = award['formatted']
@@ -81,20 +65,21 @@ def get_nominees_counts(tweets, award, things):
                     for j in range(i+1, len(split_tweet)):
                         substring = " ".join(split_tweet[i:j])
                         if substring in things:
-                            nominees[substring] += 1
-                
-                        
-            
-    print(nominees)
-    return 0
+                            if substring in nominees:
+                                continue
+                            else:
+                                nominees[substring] = things[substring]
+    
+    # check if any key is a substring of another key
+    keys = list(nominees.keys())
+    for i in range(len(keys)):
+        for j in range(i+1, len(keys)):
+            if keys[i] in keys[j] and keys[i] in nominees:
+                nominees[keys[j]] += nominees[keys[i]]
+                del nominees[keys[i]]
+    
     # return a list of the top 5 nominees
-    # sorted_nominees = sorted(nominees.items(), key=lambda x: x[1], reverse=True)
-    # category = award['category']
-    # if category == 'Movie':
-    #     return [nominee for nominee, count in sorted_nominees[:5] if nominee in movies_set]
-    # elif category == 'Person':
-    #     return [nominee for nominee, count in sorted_nominees[:5] if nominee in celebs_set]
-    # return [nominee for nominee, count in sorted_nominees[:5]]
+    return sorted(nominees.items(), key=lambda x: x[1], reverse=True)[:5]
 
 def preprocess_tweets(tweets):
     nominee_prediction_phrases = [
