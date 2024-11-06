@@ -1,9 +1,13 @@
 import json
 from textblob import TextBlob
 import os
+from main import AWARDS_LIST
+from winners import get_winner
+from presenters import get_presenters
+from nominees import get_nominees
 
 def load_json_file(filename):
-    #Load JSON file using relative path
+    # Load JSON file using relative path
     try:
         # Try to load from src directory
         current_dir = os.path.dirname(__file__)
@@ -16,210 +20,165 @@ def load_json_file(filename):
         return None
 
 def analyze_sentiment_for_entity(tweets, entity_name):
-    
-    #Use TextBlob's sentiment analysis to classify tweets
-    
-    #Args:
-    #tweets: List of tweets
-    #entity_name: Name of entity to analyze
-        
-    #Returns:
-    #Dictionary containing sentiment analysis results
-
+    # Analyze sentiment for a specific entity in tweets
     stats = {
         'positive': 0,
         'negative': 0,
         'neutral': 0,
-        'total': 0,
-        'sentiment_examples': {
-            'positive': [],  # Store positive tweet examples
-            'negative': [],  # Store negative tweet examples
-            'neutral': []    # Store neutral tweet examples
-        }
+        'total': 0
     }
     
     for tweet in tweets:
-        text = tweet['text'].lower()
+        text = tweet.get('text', '').lower()
         if entity_name.lower() in text:
-            # Use TextBlob for sentiment analysis
             blob = TextBlob(text)
-            
-            # Get sentiment scores
             polarity = blob.sentiment.polarity
-            subjectivity = blob.sentiment.subjectivity
             
-            # Classify based on polarity and subjectivity
-            if subjectivity > 0.5:  # Only count if tweet is subjective enough
-                if polarity > 0.1:
-                    stats['positive'] += 1
-                    if len(stats['sentiment_examples']['positive']) < 3:
-                        stats['sentiment_examples']['positive'].append({
-                            'text': tweet['text'],
-                            'polarity': polarity,
-                            'subjectivity': subjectivity,
-                            'retweet_count': tweet.get('retweet_count', 0)
-                        })
-                elif polarity < -0.1:
-                    stats['negative'] += 1
-                    if len(stats['sentiment_examples']['negative']) < 3:
-                        stats['sentiment_examples']['negative'].append({
-                            'text': tweet['text'],
-                            'polarity': polarity,
-                            'subjectivity': subjectivity,
-                            'retweet_count': tweet.get('retweet_count', 0)
-                        })
-                else:
-                    stats['neutral'] += 1
-                    if len(stats['sentiment_examples']['neutral']) < 3:
-                        stats['sentiment_examples']['neutral'].append({
-                            'text': tweet['text'],
-                            'polarity': polarity,
-                            'subjectivity': subjectivity,
-                            'retweet_count': tweet.get('retweet_count', 0)
-                        })
-                stats['total'] += 1
+            if polarity > 0.1:
+                stats['positive'] += 1
+            elif polarity < -0.1:
+                stats['negative'] += 1
+            else:
+                stats['neutral'] += 1
+            stats['total'] += 1
     
     return stats
 
-def format_sentiment_summary(entity_type, entity_name, stats):
-    #Format sentiment analysis results focusing on sentiment distribution and trends
-    if stats['total'] == 0:
-        return f"{entity_type}: {entity_name}\n- Insufficient data for analysis\n"
-    
-    # Calculate percentages
-    pos_percent = (stats['positive'] / stats['total']) * 100
-    neg_percent = (stats['negative'] / stats['total']) * 100
-    neu_percent = (stats['neutral'] / stats['total']) * 100
-    
-    # Calculate sentiment trend
-    def determine_reception(pos_percent, neg_percent):
-        if pos_percent - neg_percent > 30:
-            return "Very Positive"
-        elif pos_percent - neg_percent > 10:
-            return "Moderately Positive"
-        elif neg_percent - pos_percent > 30:
-            return "Very Negative"
-        elif neg_percent - pos_percent > 10:
-            return "Moderately Negative"
-        else:
-            return "Neutral"
-    
-    # Get the reception result
-    reception = determine_reception(pos_percent, neg_percent)
-    
-    # Simplified output
-    output = f"{entity_type}: {entity_name}\n"
-    output += f"Overall Reception: {reception} ({pos_percent:.1f}%)\n"
-    
-    return output + "\n"
-
 def write_sentiment_results(sentiment_data, output_file='sentiment_analysis_results.txt'):
+    # include all five categories results writing function
     with open(output_file, 'w') as f:
-        # Hosts
-        f.write("1. HOSTS\n")
+        # Hosts section
+        f.write("HOSTS SENTIMENT\n")
+        f.write("=================\n")
         for host, data in sentiment_data['hosts'].items():
             f.write(f"Host: {host}\n")
-            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+            f.write(f"Overall Reception: {data['reception']}\n\n")
         
-        # Winners
-        f.write("2. WINNERS\n")
-        for category, winner_data in sentiment_data['winners'].items():
-            winner = winner_data['name']  # assume winner name is stored here
-            f.write(f"Winner ({category}): {winner}\n")
-            f.write(f"Overall Reception: {winner_data['overall_reception']} ({winner_data['positive_percentage']:.1f}%)\n\n")
+        # Winners section
+        f.write("WINNERS SENTIMENT\n")
+        f.write("===================\n")
+        for winner, data in sentiment_data['winners'].items():
+            f.write(f"Winner: {winner}\n")
+            f.write(f"Overall Reception: {data['reception']}\n\n")
         
-        # Presenters
-        f.write("3. PRESENTERS\n")
+        # Presenters section
+        f.write("PRESENTERS SENTIMENT\n")
+        f.write("=======================\n")
         for presenter, data in sentiment_data['presenters'].items():
             f.write(f"Presenter: {presenter}\n")
-            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+            f.write(f"Overall Reception: {data['reception']}\n\n")
         
-        # Nominees
-        f.write("4. NOMINEES\n")
+        # Performances section
+        f.write("PERFORMANCES SENTIMENT\n")
+        f.write("=======================\n")
+        for performer, data in sentiment_data['performances'].items():
+            f.write(f"Performance by: {performer}\n")
+            f.write(f"Overall Reception: {data['reception']}\n\n")
+        
+        # Nominees section
+        f.write("NOMINEES SENTIMENT\n")
+        f.write("===================\n")
         for nominee, data in sentiment_data['nominees'].items():
             f.write(f"Nominee: {nominee}\n")
-            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
+            f.write(f"Overall Reception: {data['reception']}\n\n")
 
-def analyze_and_write_results(all_data, output_file='sentiment_analysis_results.txt'):
-    with open(output_file, 'w') as f:
-        # Hosts analysis
-        f.write("1. HOSTS\n")
-        for host, data in all_data['hosts'].items():
-            f.write(f"Host: {host}\n")
-            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
-        
-        # Awards analysis
-        f.write("2. AWARDS\n")
-        for award, data in all_data['awards'].items():
-            f.write(f"Award: {award}\n")
-            f.write(f"Overall Reception: {data['overall_reception']} ({data['positive_percentage']:.1f}%)\n\n")
-        
-        
+def determine_reception(pos_percent, neg_percent):
+    if pos_percent - neg_percent > 30:
+        return "Very Positive"
+    elif pos_percent - neg_percent > 10:
+        return "Moderately Positive"
+    elif neg_percent - pos_percent > 30:
+        return "Very Negative"
+    elif neg_percent - pos_percent > 10:
+        return "Moderately Negative"
+    else:
+        return "Neutral"
 
 def main():
-    # Main function to analyze Golden Globes tweets
     tweets = load_json_file('gg2013.json')
     if tweets is None:
         return
     
     print(f"Successfully loaded {len(tweets)} tweets")
     
-    # Initialize results
-    results = {
+    # preprocessing: only extract text content
+    tweet_texts = [tweet['text'] for tweet in tweets]  # pass text list to get_winner
+    
+    # initialize results
+    formatted_results = {
         'hosts': {},
         'winners': {},
         'presenters': {},
+        'performances': {},
         'nominees': {}
     }
     
-    output = "GOLDEN GLOBES 2013 SENTIMENT ANALYSIS\n\n"
-    
-    # TODO: Import data from main.py analysis results
-    # Format expected:
-    # hosts = get_hosts(tweets)  # List of hosts
-    # winners = get_all_winners(tweets, awards)  # Dictionary of award:winner
-    # presenters = get_presenters(tweets, award)  # Dictionary of award:presenters
-    # nominees = get_nominees(tweets, award)  # Dictionary of award:nominees
-    
-    # 1. Hosts Analysis
-    output += "1. HOSTS SENTIMENT\n"
-    output += "=================\n"
-    # TODO: Replace with actual hosts from main analysis
-    hosts = ["amy poehler", "tina fey"]  # This will be replaced with get_hosts() result
+    # Process hosts
+    hosts = ["amy poehler", "tina fey"]
     for host in hosts:
-        stats = analyze_sentiment_for_entity(tweets, host)
-        results['hosts'][host] = stats
-        output += format_sentiment_summary("Host", host, stats)
+        stats = analyze_sentiment_for_entity(tweets, host)  # use original tweets for sentiment analysis
+        if stats and stats['total'] > 0:
+            formatted_results['hosts'][host] = {
+                'reception': determine_reception(
+                    (stats['positive'] / stats['total'] * 100),
+                    (stats['negative'] / stats['total'] * 100)
+                )
+            }
     
-    # 2. Winners Analysis
-    output += "2. WINNERS SENTIMENT\n"
-    output += "===================\n"
-    # TODO: Replace with actual winners from main analysis
-    winners = {
-        "Best Motion Picture - Drama": "argo",
-        "Best Motion Picture - Musical or Comedy": "les miserables",
-        "Best Director": "ben affleck"
-    }  # This will be replaced with get_all_winners() result
-    for award, winner in winners.items():
-        stats = analyze_sentiment_for_entity(tweets, winner)
-        results['winners'][winner] = stats
-        output += format_sentiment_summary(f"Winner ({award})", winner, stats)
+    # Process awards
+    for award in AWARDS_LIST:
+        # Winners - pass text list instead of dict list
+        winner = get_winner(tweet_texts, award)  # here changed
+        if winner:
+            stats = analyze_sentiment_for_entity(tweets, winner)
+            if stats and stats['total'] > 0:
+                formatted_results['winners'][winner] = {
+                    'reception': determine_reception(
+                        (stats['positive'] / stats['total'] * 100),
+                        (stats['negative'] / stats['total'] * 100)
+                    )
+                }
+        
+        # Presenters
+        presenters = get_presenters(tweets, award)
+        for presenter in presenters:
+            stats = analyze_sentiment_for_entity(tweets, presenter)
+            if stats and stats['total'] > 0:
+                formatted_results['presenters'][presenter] = {
+                    'reception': determine_reception(
+                        (stats['positive'] / stats['total'] * 100),
+                        (stats['negative'] / stats['total'] * 100)
+                    )
+                }
+        
+        # Nominees
+        nominees = get_nominees(tweets, award)
+        for nominee in nominees:
+            stats = analyze_sentiment_for_entity(tweets, nominee)
+            if stats and stats['total'] > 0:
+                formatted_results['nominees'][nominee] = {
+                    'reception': determine_reception(
+                        (stats['positive'] / stats['total'] * 100),
+                        (stats['negative'] / stats['total'] * 100)
+                    )
+                }
+        
+        # Performances (focus on performance category)
+        if 'performance' in award.lower() or 'actor' in award.lower() or 'actress' in award.lower():
+            if winner:
+                perf_stats = analyze_sentiment_for_entity(tweets, winner, performance_context=True)
+                if perf_stats and perf_stats['total'] > 0:
+                    formatted_results['performances'][winner] = {
+                        'reception': determine_reception(
+                            (perf_stats['positive'] / perf_stats['total'] * 100),
+                            (perf_stats['negative'] / perf_stats['total'] * 100)
+                        )
+                    }
     
-    # 3. Presenters Analysis
-    output += "3. PRESENTERS SENTIMENT\n"
-    output += "=======================\n"
-    # TODO: Add presenters analysis using get_presenters() result
-    
-    # 4. Nominees Analysis
-    output += "4. NOMINEES SENTIMENT\n"
-    output += "====================\n"
-    # TODO: Add nominees analysis using get_nominees() result
-    
-    # Write results to txt file
-    with open('sentiment_analysis_results.txt', 'w') as f:
-        f.write(output)
-    
+    # Write results
+    write_sentiment_results(formatted_results)
     print("Analysis complete! Results saved to sentiment_analysis_results.txt")
+    return formatted_results
 
 if __name__ == "__main__":
     main()
