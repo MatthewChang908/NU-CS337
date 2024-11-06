@@ -180,12 +180,23 @@ def get_red_carpet():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_file = os.path.join(script_dir, 'redcarpet_analysis.txt')
     
-    with open(output_file, 'a') as f:
-        f.write("\nRed Carpet Fashion:\n")
+    with open(output_file, 'w') as f:
+        f.write("Red Carpet Fashion:\n")
         f.write(f"Best Dressed: {', '.join(best_three)}\n")
         f.write(f"Worst Dressed: {', '.join(worst_three)}\n")
         f.write(f"Most Controversially Dressed: {controversial_one}\n")
-        f.write(f"Most Discussed: {most_discussed_one}\n")
+        f.write(f"Most Discussed: {most_discussed_one}")
+
+def get_red_carpet_results():
+    """Return red carpet analysis results"""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(script_dir, 'redcarpet_analysis.txt')
+    
+    try:
+        with open(output_file, 'r') as f:
+            return f.read().strip()
+    except Exception as e:
+        return str(e)
 
 def main():
     """Main function for standalone execution"""
