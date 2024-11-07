@@ -6,7 +6,9 @@ from preprocessing import load_tweets, preprocess_tweets
 from redcarpet import get_red_carpet_results
 from process_awards import process
 from nominees import get_nominees
-from presenters import get_presenters
+from presenters import get_all_presenters
+from awards import get_awards
+from interactive_menu import show_menu
 from winners import get_all_winners
 import awards as a
 import results as r
@@ -71,17 +73,6 @@ def get_tweets(year):
         print(f"Error loading tweets for {year}. Please check the file and try again.")
         return []
 
-def presenters(tweets, print_results=True):
-    presenters_dict = {}
-    if print_results:
-        print("\nPresenters:")
-    for award in AWARDS_LIST:
-        award_lower = award.lower()
-        presenters = get_presenters(tweets, award_lower)
-        if presenters and print_results:  # print the awards with presenters
-            print(f"{award}: {presenters}")  # print the awards and presenters
-        presenters_dict[award_lower] = presenters
-    return presenters_dict
 def main():
     while True:
         print("\nWelcome to our Golden Globes project! Which year would you like to analyze?")
@@ -113,7 +104,7 @@ def main():
         elif choice == "2":
             a.get_awards(tweet_texts)
         elif choice == "3":
-            presenters(tweets)
+            get_all_presenters(tweets, AWARDS_LIST)
         elif choice == "4":
             get_nominees(tweet_texts, awards)
         elif choice == "5":
@@ -123,7 +114,7 @@ def main():
         elif choice == "7":
             print("\nGetting all results...")
             host = getHost(tweet_texts, print_results=False)
-            pres = presenters(tweets, print_results=False)
+            pres = get_all_presenters(tweets, print_results=False)
             nominees = get_nominees(tweet_texts, awards, print_results=False)
             winners = get_all_winners(tweet_texts, awards, print_results=False)
             print("Results saved to results.json")
