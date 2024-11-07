@@ -1,0 +1,206 @@
+{
+    "Hosts": [
+        "Tina Fey",
+        "Amy Poehler"
+    ],
+    "Best Motion Picture - Drama": {
+        "nominees": "Picture, President, Motion Picture, Argo",
+        "winner": "Argo",
+        "presenters": [
+            "Bill Clinton",
+            "Hillary Clinton'S"
+        ]
+    },
+    "Best Motion Picture - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Les miserables",
+        "presenters": [
+            "Bill Clinton",
+            "Bill Clinton"
+        ]
+    },
+    "Best Performance by an Actor in a Motion Picture - Drama": {
+        "nominees": [],
+        "winner": "Daniel daylewis",
+        "presenters": [
+            "Bradley Cooper",
+            "Jennifer Lawrence"
+        ]
+    },
+    "Best Performance by an Actress in a Motion Picture - Drama": {
+        "nominees": [],
+        "winner": "Jessica chastain",
+        "presenters": [
+            "Jodie Foster",
+            "Mel Gibson"
+        ]
+    },
+    "Best Performance by an Actor in a Motion Picture - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Hugh jackman",
+        "presenters": [
+            "George Clooney",
+            "George Clooney"
+        ]
+    },
+    "Best Performance by an Actress in a Motion Picture - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Jennifer lawrence",
+        "presenters": [
+            "Jodie Foster",
+            "Robert Downey Jr"
+        ]
+    },
+    "Best Performance by an Actor in a Supporting Role in any Motion Picture": {
+        "nominees": "Motion, Actor, Kate Hudson, Hudson, Bradley Cooper",
+        "winner": "Christoph waltz",
+        "presenters": [
+            "Bradley Cooper",
+            "Kate Hudson"
+        ]
+    },
+    "Best Performance by an Actress in a Supporting Role in any Motion Picture": {
+        "nominees": [],
+        "winner": "Anne hathaway",
+        "presenters": [
+            "Jodie Foster",
+            "Robert Downey Jr."
+        ]
+    },
+    "Best Director - Motion Picture": {
+        "nominees": [],
+        "winner": "Ben affleck",
+        "presenters": [
+            "Bill Mack",
+            "Daddy Clinton"
+        ]
+    },
+    "Best Screenplay - Motion Picture": {
+        "nominees": "Motion, Amanda Seyfried, Robert Pattinson, Pattinson, Screenplay",
+        "winner": "Django",
+        "presenters": [
+            "Amanda Seyfried",
+            "Robert Pattinson"
+        ]
+    },
+    "Best Original Score - Motion Picture": {
+        "nominees": [],
+        "winner": "",
+        "presenters": [
+            "Kristen Wiig",
+            "Kristen Wiig"
+        ]
+    },
+    "Best Original Song - Motion Picture": {
+        "nominees": [],
+        "winner": "Adele",
+        "presenters": [
+            "Robert Pattinson",
+            "Robert Pattinson"
+        ]
+    },
+    "Best Animated Feature Film": {
+        "nominees": "Film, Brave",
+        "winner": "Brave",
+        "presenters": [
+            "Ben Affleck",
+            "Jennifer Garner"
+        ]
+    },
+    "Best Foreign Language Film": {
+        "nominees": "Foreign, Sylvester Stallone",
+        "winner": "Golden",
+        "presenters": [
+            "Arnold Schwarzenegger",
+            "Sylvester Stallone"
+        ]
+    },
+    "Best Television Series - Drama": {
+        "nominees": "Again",
+        "winner": "Homeland",
+        "presenters": [
+            "Kristen Stewart",
+            "Robert Pattinson Presents"
+        ]
+    },
+    "Best Television Series - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Girls",
+        "presenters": [
+            "Jay Leno",
+            "Jimmy Fallon"
+        ]
+    },
+    "Best Performance by an Actor in a Television Series - Drama": {
+        "nominees": [],
+        "winner": "Homeland",
+        "presenters": [
+            "Jennifer Lawrence",
+            "Kristen Wiig"
+        ]
+    },
+    "Best Performance by an Actress in a Television Series - Drama": {
+        "nominees": "Homeland, Claire Danes, Actress, Lea Michele, Nathan Fillion",
+        "winner": "Claire danes",
+        "presenters": [
+            "Lea Michele",
+            "Nathan Fillion"
+        ]
+    },
+    "Best Performance by an Actor in a Television Series - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Don cheadle",
+        "presenters": [
+            "Jodie Foster'S",
+            "Robert Downey Jr."
+        ]
+    },
+    "Best Performance by an Actress in a Television Series - Musical or Comedy": {
+        "nominees": [],
+        "winner": "Lena dunham",
+        "presenters": [
+            "Jason Statham",
+            "Mychael Danna"
+        ]
+    },
+    "Best Performance by an Actor in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television": {
+        "nominees": [],
+        "winner": "",
+        "presenters": [
+            "Don Cheadle",
+            "Mel Gibson"
+        ]
+    },
+    "Best Performance by an Actress in a Supporting Role in a Series, Miniseries or Motion Picture Made for Television": {
+        "nominees": [],
+        "winner": "",
+        "presenters": [
+            "Bill Clinton",
+            "Steven Spielberg"
+        ]
+    },
+    "Best Mini-Series or Motion Picture Made for Television": {
+        "nominees": [],
+        "winner": "Game",
+        "presenters": [
+            "Bill Clinton",
+            "Lena Dunham"
+        ]
+    },
+    "Best Performance by an Actor in a Mini-Series or Motion Picture Made for Television": {
+        "nominees": [],
+        "winner": "",
+        "presenters": [
+            "Bill Clinton",
+            "George Clooney'S"
+        ]
+    },
+    "Best Performance by an Actress in a Mini-Series or Motion Picture Made for Television": {
+        "nominees": [],
+        "winner": "",
+        "presenters": [
+            "Jodie Foster",
+            "Robert Downey"
+        ]
+    }
+}

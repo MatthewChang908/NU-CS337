@@ -33,16 +33,17 @@ AWARDS_LIST = [
     "Best Performance by an Actress in a Mini-Series or Motion Picture Made for Television",
 ]
 
-def get_all_presenters(tweets, awards_list):
+def get_all_presenters(awards_list, year, print_results=True):
     detector = PresenterDetector()
-    presenters = detector.get_presenters('2013')  # hardcoded year as 2013
+    presenters = detector.get_presenters(year)  # hardcoded year as 2013
     
     # Print results for each award
-    for award in awards_list:
-        if award in presenters and presenters[award]:
-            print(f"{award}: {presenters[award]}")
-        else:
-            print(f"{award}: []")
+    if print_results:
+        for award in awards_list:
+            if award in presenters and presenters[award]:
+                print(f"{award}: {presenters[award]}")
+            else:
+                print(f"{award}: []")
     
     return presenters
 

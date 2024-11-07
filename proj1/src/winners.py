@@ -94,7 +94,7 @@ def get_all_winners(tweets, awards, print_results=True):
     results = {}
     for award in awards:
         winner = get_winner(tweets, awards[award], nlp, films)
-        results[award] = winner
+        results[award] = winner.capitalize()
         if print_results:
             print("Award:", award)
             print("Winner:", winner)

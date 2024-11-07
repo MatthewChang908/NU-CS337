@@ -97,14 +97,14 @@ def main():
         print("7. Get All Results to File")
         print("8. Exit")
         
-        choice = input("\nPlease enter a number (1-7): ")
+        choice = input("\nPlease enter a number (1-8): ")
         
         if choice == "1":
             getHost(tweet_texts)
         elif choice == "2":
             a.get_awards(tweet_texts)
         elif choice == "3":
-            get_all_presenters(tweets, AWARDS_LIST)
+            get_all_presenters(AWARDS_LIST, year)
         elif choice == "4":
             get_nominees(tweet_texts, awards)
         elif choice == "5":
@@ -114,11 +114,15 @@ def main():
         elif choice == "7":
             print("\nGetting all results...")
             host = getHost(tweet_texts, print_results=False)
-            pres = get_all_presenters(tweets, print_results=False)
+            print("Finished getting hosts")
+            presenters = get_all_presenters(AWARDS_LIST, year, print_results=False)
+            print("Finished getting presenters")
             nominees = get_nominees(tweet_texts, awards, print_results=False)
+            print("Finished getting nominees")
             winners = get_all_winners(tweet_texts, awards, print_results=False)
+            print("Finished getting winners")
             print("Results saved to results.json")
-            # r.output_results(awards, host, presenters, nominees, winners)
+            r.output_results(awards, host, presenters, nominees, winners)
         elif choice == "8":
             print("\nThank you for using our app!")
             break
