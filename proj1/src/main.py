@@ -1,4 +1,3 @@
-import json
 import os
 import pandas as pd
 
@@ -8,11 +7,9 @@ from redcarpet import get_red_carpet_results
 from process_awards import process
 from nominees import get_nominees
 from presenters import get_presenters
-from awards import get_awards
-from interactive_menu import show_menu
 from winners import get_all_winners
 import awards as a
-
+import results as r
 AWARDS_LIST = [
     "Best Motion Picture - Drama",
     "Best Motion Picture - Musical or Comedy",
@@ -74,6 +71,17 @@ def get_tweets(year):
         print(f"Error loading tweets for {year}. Please check the file and try again.")
         return []
 
+def presenters(tweets, print_results=True):
+    presenters_dict = {}
+    if print_results:
+        print("\nPresenters:")
+    for award in AWARDS_LIST:
+        award_lower = award.lower()
+        presenters = get_presenters(tweets, award_lower)
+        if presenters and print_results:  # print the awards with presenters
+            print(f"{award}: {presenters}")  # print the awards and presenters
+        presenters_dict[award_lower] = presenters
+    return presenters_dict
 def main():
     while True:
         print("\nWelcome to our Golden Globes project! Which year would you like to analyze?")
@@ -95,7 +103,8 @@ def main():
         print("4. Show Nominees")
         print("5. Show Winners")
         print("6. Show Red Carpet Analysis")
-        print("7. Exit")
+        print("7. Get All Results to File")
+        print("8. Exit")
         
         choice = input("\nPlease enter a number (1-7): ")
         
@@ -104,14 +113,7 @@ def main():
         elif choice == "2":
             a.get_awards(tweet_texts)
         elif choice == "3":
-            presenters_dict = {}
-            print("\nPresenters:")
-            for award in AWARDS_LIST:
-                award_lower = award.lower()
-                presenters = get_presenters(tweets, award_lower)
-                if presenters:  # print the awards with presenters
-                    print(f"{award}: {presenters}")  # print the awards and presenters
-                presenters_dict[award_lower] = presenters
+            presenters(tweets)
         elif choice == "4":
             get_nominees(tweet_texts, awards)
         elif choice == "5":
@@ -119,6 +121,14 @@ def main():
         elif choice == "6":
             print(get_red_carpet_results())
         elif choice == "7":
+            print("\nGetting all results...")
+            host = getHost(tweet_texts, print_results=False)
+            pres = presenters(tweets, print_results=False)
+            nominees = get_nominees(tweet_texts, awards, print_results=False)
+            winners = get_all_winners(tweet_texts, awards, print_results=False)
+            print("Results saved to results.json")
+            # r.output_results(awards, host, presenters, nominees, winners)
+        elif choice == "8":
             print("\nThank you for using our app!")
             break
         else:

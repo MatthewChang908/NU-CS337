@@ -3,7 +3,7 @@ from collections import defaultdict
 import json
 import numpy as np
 
-def getHost(tweets):
+def getHost(tweets, print_results=True):
     tweets = preprocess(tweets)
     hosts = defaultdict(int)
 
@@ -32,9 +32,10 @@ def getHost(tweets):
     # get the top 2: 
     hosts = dict(sorted(consolidated_hosts.items(), key=lambda x: x[1], reverse=True)[:5])
     hosts = getRealHosts(hosts)
-    print("\nHosts:")
-    for host in hosts:
-        print(host)
+    if print_results:
+        print("\nHosts:")
+        for host in hosts:
+            print(host)
     return hosts
 
 def preprocess(tweets):

@@ -5,7 +5,7 @@ import re
 nlp = spacy.load("en_core_web_sm")
 import helpers as h
 
-def get_nominees(tweets, awards):
+def get_nominees(tweets, awards, print_results=True):
     movies_set = set()
     with open("data/movie_names.json", "r") as json_file:
         movie_names = json.load(json_file)
@@ -40,18 +40,21 @@ def get_nominees(tweets, awards):
         
         for show in shows:
             things[show] += 1
-    # print(len(things))
     
     nominees = {}
     for award in awards:
         nominees[award] = get_nominees_counts(tweets, awards[award], things)
-    print("\nNominees:")
+    if print_results:
+        print("\nNominees:")
     for award, noms in nominees.items():
         if noms:
             noms = ", ".join([nom[0] for nom in noms])
+            nominees[award] = noms
         else:
             noms = "None Found"
-        print(f"{award}: {noms}")
+        if print_results:
+            print(f"{award}: {noms}")
+    return nominees
     
 def get_nominees_counts(tweets, award, things):
     award_names = award['formatted']

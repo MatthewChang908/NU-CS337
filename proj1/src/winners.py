@@ -9,13 +9,13 @@ def get_winner(tweets, award, nlp, films):
     award_first_pattern = re.compile(r"AWARD (award )?(goes to|won by) (.*?)", re.IGNORECASE)
 
     result = defaultdict(int)
-    for a in award['formatted']:
-        a_escaped = re.escape(a)  # Escape award name for regex safety
-        # Compile patterns for the current award format
-        person_first = re.compile(person_first_pattern.pattern.replace("AWARD", a_escaped), re.IGNORECASE)
-        award_first = re.compile(award_first_pattern.pattern.replace("AWARD", a_escaped), re.IGNORECASE)
-        
-        for tweet in tweets:
+    for tweet in tweets:
+        for a in award['formatted']:
+            a_escaped = re.escape(a)  # Escape award name for regex safety
+            # Compile patterns for the current award format
+            person_first = re.compile(person_first_pattern.pattern.replace("AWARD", a_escaped), re.IGNORECASE)
+            award_first = re.compile(award_first_pattern.pattern.replace("AWARD", a_escaped), re.IGNORECASE)
+
             # Process if award type is "Movie/song"
             if award['category'] == "Movie":
                 # Check for person-first pattern
@@ -63,20 +63,16 @@ def get_winner(tweets, award, nlp, films):
                     entities = [ent.text.lower() for ent in doc.ents]
                     for ent in entities:
                         result[ent] += 1
-                        
-
-    print(result)
     # Get the winner from the tweets through max frequency
     if not result:
         return ""
     return max(result, key=result.get)
 
-def get_all_winners(tweets, awards):
+def get_all_winners(tweets, awards, print_results=True):
     
     with open("data/awards.json", "r") as json_file:
         awards = json.load(json_file)
-        
-        
+
     # Filter tweets that contain winning-related words
     tweets = [tweet for tweet in tweets if re.search(r"\bwins?\b|\bwon\b|\bgoes\b|\bwon by\b", tweet, re.IGNORECASE)]
     nlp = spacy.load("en_core_web_sm")
@@ -93,19 +89,16 @@ def get_all_winners(tweets, awards):
         shows_set = set(tv_shows)
         
     films = movies_set | shows_set
-    
-    print("\nWinners:") 
+    if print_results:
+        print("\nWinners:") 
     results = {}
     for award in awards:
-        
-        # if award != "Best Animated Feature Film":
-        #     continue
-        
         winner = get_winner(tweets, awards[award], nlp, films)
         results[award] = winner
-        print("Award:", award)
-        print("Winner:", winner)
-        print()
+        if print_results:
+            print("Award:", award)
+            print("Winner:", winner)
+            print()
     return results
 
 def get_all_subphrases(sentence):

@@ -6,4 +6,4 @@ Run ```pip install -r requirements.txt```
 
 From the src directory, run ```python3 main.py```
 
-If you want to test different years, add gg____.json to src, and change the tweets_file variable in main.py to gg_____.json
+If you want to test different years, add gg____.json to the data file, and input the new year when prompted.
